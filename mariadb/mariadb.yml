@@ -1,0 +1,36 @@
+# THIS IS ONLY MEANT FOR DEVELOPMENT USE
+version: '3.9'
+
+networks:
+  perunanetti:
+    driver: overlay
+    attachable: true
+    external: true
+
+volumes:
+  mariadb_data:
+    external: true
+
+secrets:
+  MARIADB_PASSWORD: 
+    external: true
+
+services:
+  mariadb:
+    image: mariadb:10.3
+    networks:
+      - perunanetti
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      #- ${PWD}/mariadb/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: bash -c 'mysqladmin -p"$MARIADB_ROOT_PASSWORD" ping -h localhost'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      mode: global
