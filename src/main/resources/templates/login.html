@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+    <title>Sign in | Demo Forums</title>
+  </head>
+  <body>
+    <div class="form">
+      <h1>Sign in</h1>
+      <p th:if="${loginError}" class="error">Wrong email or password</p>
+      <form 
+        class="login" 
+        th:action="@{/signin}" 
+        th:object="${userDto}"
+        method="post"
+        accept-charset="utf-8"
+        >
+        <div class="inputbox">
+          <input 
+            type="text" 
+            name="email" 
+            id="email" 
+            placeholder="Enter email"
+            >
+          <label for="">Email</label>
+        </div>
+        <div class="inputbox">
+          <input 
+            type="password" 
+            name="password" 
+            id="password" 
+            placeholder="Enter password"
+            >
+          <label for="">Password</label>
+        </div>
+        <div class="btn">
+          <input type="submit" name="submit_signin" value="Sign in">
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+    <title>Register | Demo Forums</title>
+  </head>
+  <body>
+    <div class="form">
+      <h1>Register</h1>
+      <form 
+        class="signup" 
+        th:action="@{/register}" 
+        th:object="${registrationDto}"
+        method="post"
+        accept-charset="utf-8"
+        >
+        <div class="inputbox">
+          <input 
+            type="text" 
+            name="username" 
+            id="username" 
+            placeholder="Enter username" 
+            >
+          <label for="">Username</label>
+        </div>
+        <div class="inputbox">
+          <input 
+            type="email" 
+            name="email" 
+            id="email" 
+            placeholder="Enter email"
+            >
+          <label for="">Email</label>
+        </div>
+        <div class="inputbox">
+          <input 
+            type="password" 
+            name="password" 
+            id="password" 
+            placeholder="Enter password"
+            >
+          <label for="">Password</label>
+        </div>
+        <div class="inputbox">
+          <input 
+            type="password" 
+            name="password_verify" 
+            id="password_verify" 
+            placeholder="Enter password again"
+            >
+          <label for="">Repeat password</label>
+        </div>
+        <div class="btn">
+          <input type="submit" name="submit_register" value="Sign up">
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

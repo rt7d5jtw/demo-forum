@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="This is an example of a meta description.">
+  <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <title>Demo Forums</title>
+</head>
+  <body>
+  <main>
+    <div class="header">
+      <img src="https://i.imgur.com/kAMcz76.png" />
+    </div>
+    <div class="subheader">
+      <section class="subheader_subsection">
+        <a href="/search">Search</a>
+        <a href="/faq">FAQ</a>
+      </section>
+      <section class="subheader_subsection">
+        <a href="/signin">Sign in</a>
+        <a href="/register">Register</a>
+      </section>
+    </div>
+    <div class="content">
+      <header class="forum_header">Forums</header>
+      <section class="forum_section">
+        <a href="" title="Click here to continue to the topic link">
+        <div class="forum_section_desc">
+          <h3>Forum Topic</h3>
+          <p>Discussions about the main thing.</p>
+        </div>
+        </a>
+        <div class="forum_section_stats">
+          <p>Threads:</p>
+          <p>Posts:</p>
+        </div>
+        <div class="forum_section_lastpost">
+          <p>Last poster:</p>
+        </div>
+      </section>
+    </div>
+  </main >
+  </body>
+</html>

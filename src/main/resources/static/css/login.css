@@ -1,0 +1,88 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+	padding: 0;
+  font-family: 'Franklin Gothic', monospace;
+  background: #360033;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0b8793, #360033);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0b8793, #360033); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.form {
+  transform: translate(-50%, -50%);
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+	border-radius: 10px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+	left: 50%;
+	width: 400px;
+	padding: 40px;
+  background: rgba(0,0,0,.5);
+}
+
+.form h1 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #f1eee6;
+  text-align: center;
+}
+
+.form .inputbox {
+  position: relative;
+}
+
+.form .inputbox input {
+  width: 100%;
+  padding: 15px 0;
+  font-size: 16px;
+  color: #f1eee6;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #f1eee6;
+  outline: none; 
+  background: transparent;
+}
+
+.form .inputbox label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 10px 0;
+	font-size: 16px;
+	color: #f1eee6;
+	pointer-events: none;
+	transition: .5s;
+}
+
+.form .inputbox input:focus ~ label, .form .inputbox input:valid ~ label {
+  top: -20px;
+  left: 0px;
+  color: #ececec;
+  font-size: 12px;
+}
+
+.btn input {
+  background: #0c3b40;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn input:hover {
+  background: #263c60;
+}
+
+#btn2 {
+  margin: 1.5em 0;
+}
