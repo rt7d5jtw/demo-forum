@@ -3,10 +3,12 @@ package demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import demo.entities.dtos.UserDto;
 import demo.entities.enums.Role;
@@ -18,6 +20,8 @@ import demo.utils.Timestamper;
 
 import java.sql.Timestamp;
 import java.util.Date;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(
@@ -73,13 +77,20 @@ public class ViewController {
   @PostMapping(path = "/register")
   public String register(
       @ModelAttribute("registrationDto") RegistrationDto registrationDto, 
-      Model model
+      Model model, Errors errors, RedirectAttributes redirectAttributes,
+      HttpSession httpSession
       ) {
     System.out.println(
         "Input from a form received for registration :: "
         + timestamper.timestamp()
         + " ->" + registrationDto.toString()
         );
+    // Check that "repeat password" input matches first "password" input.
+    if (registrationDto.getPassword() != registrationDto.getPassword_verify()) {
+      model.addAttribute("verifyPasswordError", "Passwords did not match each other!");
+      return "registration";
+    }
+
     userDao.save(
         new User(
           registrationDto.getEmail(),
@@ -88,7 +99,10 @@ public class ViewController {
           UserStatus.ACTIVE, 
           new Timestamp(new Date().getTime())
         ));
-    return "registration";
+
+    // Add loggedIn attribute to the http session to indicate user is loggedIn
+    httpSession.setAttribute("loggedIn", true);
+    return "redirect:/";
   }
 
   @GetMapping(path = "/faq")

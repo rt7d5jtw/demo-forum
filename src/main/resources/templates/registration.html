@@ -9,6 +9,10 @@
   <body>
     <div class="form">
       <h1>Register</h1>
+      <div 
+         th:if="${verifyPasswordError}" 
+        style="margin: 2rem;color: red;padding: 0.2rem;font-size: 0.9rem;text-align: center;"
+        ><p th:text="${verifyPasswordError}">Hello this is an error!</p></div>
       <form 
         class="signup" 
         th:action="@{/register}" 
@@ -22,8 +26,14 @@
             name="username" 
             id="username" 
             placeholder="Enter username" 
+            th:field="*{username}"
             >
           <label for="">Username</label>
+          <div 
+            class="alert alert-warning"
+            th:if="${#fields.hasErrors('username')}"
+            th:errors="*{username}"
+            ></div>
         </div>
         <div class="inputbox">
           <input 
