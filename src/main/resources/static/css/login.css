@@ -86,3 +86,9 @@ body {
 #btn2 {
   margin: 1.5em 0;
 }
+
+.error {
+  color: #fbe429;
+  padding: 1em;
+  text-align: center;
+}

@@ -21,6 +21,8 @@ import demo.utils.Timestamper;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -56,21 +58,38 @@ public class ViewController {
   }
 
   @PostMapping(path = "/signin")
-  public String signin(@ModelAttribute("userDto") UserDto userDto, Model model) {
+  public String signin(
+      @ModelAttribute("userDto") UserDto userDto, 
+      Model model,
+      HttpServletResponse httpServletResponse
+      ) {
     System.out.println("Input from the form -> " + userDto.toString());
     // 1. Verify the password hash against the plain password
     // 2. If password is correct, route user homepage and include jwt
     // 3. Store jwt in a cookie with XSS and CSRF protection (with short lifespan)
     // 4. If password was incorrect, display an error.
     boolean result = userDao.verifyPassword(userDto.getPassword(), userDto.getEmail());
-    if (result)
-      return "index";
+    if (!result)
+      model.addAttribute("incorrectCredentials", "Credentials are incorrect");
 
-    return "login";
+    // Store JWT access token to http only cookies
+    var cookie = new Cookie("access-token", "c2FtLnNtaXRoQGV4YW1wbGUuY29t; SameSite=strict");
+    cookie.setHttpOnly(true);
+    cookie.setMaxAge(1200);
+    cookie.setSecure(true);
+    cookie.setDomain("localhost");
+    cookie.setPath("/");
+
+    httpServletResponse.addCookie(cookie);
+    
+    return "redirect:/";
   }
 
   @GetMapping(path = "/register")
-  public String registerPage(Model model) {
+  public String registerPage(
+      @ModelAttribute("registrationDto") RegistrationDto registrationDto,
+      Model model
+      ) {
     return "registration";
   }
 
@@ -86,7 +105,7 @@ public class ViewController {
         + " ->" + registrationDto.toString()
         );
     // Check that "repeat password" input matches first "password" input.
-    if (registrationDto.getPassword() != registrationDto.getPassword_verify()) {
+    if (!registrationDto.getPassword().equals(registrationDto.getPassword_verify())) {
       model.addAttribute("verifyPasswordError", "Passwords did not match each other!");
       return "registration";
     }
@@ -106,7 +125,16 @@ public class ViewController {
   }
 
   @GetMapping(path = "/faq")
-  public String faq(Model model) {
+  public String faq(
+      Model model
+      ) {
     return "faq";
+  }
+
+  @GetMapping(path = "/profile")
+  public String profile(
+      Model model
+      ) {
+    return "profile";
   }
 }
