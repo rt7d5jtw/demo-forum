@@ -3,27 +3,36 @@ package demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.FlashMap;
 
 import demo.entities.dtos.UserDto;
 import demo.entities.enums.Role;
 import demo.entities.enums.UserStatus;
 import demo.entities.dtos.RegistrationDto;
 import demo.entities.User;
+import demo.entities.Authority;
 import demo.dao.UserDao;
+import demo.utils.JwtHandler;
 import demo.utils.Timestamper;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping(
@@ -33,16 +42,66 @@ public class ViewController {
 
   private UserDao userDao;
   private Timestamper timestamper;
+  private JwtHandler jwtHandler;
 
   @Autowired
-  private ViewController(UserDao userDao, Timestamper timestamper) {
+  private ViewController(
+      UserDao userDao, 
+      Timestamper timestamper,
+      JwtHandler jwtHandler
+      ) {
     this.userDao = userDao;
     this.timestamper = timestamper;
+    this.jwtHandler = jwtHandler;
   }
 
-  @GetMapping(path = "")
-  public String index(Model model) {
-    model.addAttribute("chizkeyk", "I like cheesecake");
+  @GetMapping(path = "/")
+  public String index(
+      Model model,
+      RedirectAttributes redirectAttributes,
+      HttpServletRequest request,
+      HttpServletResponse response
+      ) {
+    System.out.println("auth header: ");
+    System.out.println(request.getHeader("Authorization"));
+
+    System.out.println("cookies: ");
+    Cookie[] cookies = request.getCookies();
+    System.out.println(cookies);
+    Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+
+    if (cookies != null) {
+      for (var cookie : cookies) {
+        if ("token".equals(cookie.getName())) {
+
+          String email = (String)jwtHandler.verifyToken(cookie.getValue()).get("email");
+          var result = userDao.findByEmail(email);
+
+          if (result != null) {
+            if (email.equals(result.getEmail())) {
+              System.out.println("You are authenticated!");
+              System.out.println(request.getQueryString());
+              System.out.println(redirectAttributes.getFlashAttributes());
+
+              // "notifyString" key contains alert message for alert.js
+              if (inputFlashMap != null && inputFlashMap.get("notifyString") != null) {
+                model.addAttribute("notify", true);
+                model.addAttribute("notifyString", inputFlashMap.get("notifyString"));
+              }
+
+              return "index-auth";
+            }
+          }
+        }
+      }
+    }
+
+    // Argument for javascript notify() function.
+    if (inputFlashMap != null && inputFlashMap.get("notifyString") != null) {
+      model.addAttribute("notify", true);
+      model.addAttribute("notifyString", inputFlashMap.get("notifyString"));
+    }
+
     return "index";
   }
 
@@ -59,9 +118,11 @@ public class ViewController {
 
   @PostMapping(path = "/signin")
   public String signin(
+      @Valid
       @ModelAttribute("userDto") UserDto userDto, 
       Model model,
-      HttpServletResponse httpServletResponse
+      RedirectAttributes redirectAttributes,
+      HttpServletResponse response
       ) {
     System.out.println("Input from the form -> " + userDto.toString());
     // 1. Verify the password hash against the plain password
@@ -72,17 +133,50 @@ public class ViewController {
     if (!result)
       model.addAttribute("incorrectCredentials", "Credentials are incorrect");
 
-    // Store JWT access token to http only cookies
-    var cookie = new Cookie("access-token", "c2FtLnNtaXRoQGV4YW1wbGUuY29t; SameSite=strict");
-    cookie.setHttpOnly(true);
-    cookie.setMaxAge(1200);
-    cookie.setSecure(true);
-    cookie.setDomain("localhost");
-    cookie.setPath("/");
+    User foundUser = userDao.findByEmail(userDto.getEmail());
+    if (foundUser != null) {
+      // Update last logged in.
+      userDao.updateLastLoggedIn(userDto.getEmail());
+      Authority userAuthorities = userDao.findUserAuthorities(userDto.getEmail());
+      System.out.println(userAuthorities);
+      System.out.println(foundUser.getLastloggedin());
 
-    httpServletResponse.addCookie(cookie);
-    
-    return "redirect:/";
+      String token = jwtHandler.createToken(
+          Map.of(
+              "name", foundUser.getUsername(),
+              "email", userDto.getEmail(),
+              "role", foundUser.getRole(),
+              "authorities", userAuthorities.getAuthority(),
+              "created", foundUser.getCreated()
+              ), 
+          LocalDateTime.now().plusMinutes(20)
+          );
+      System.out.println("Token -> " + token);
+
+      // Store JWT access token to http only cookies
+      var cookie = new Cookie(
+          "token", 
+          token
+          );
+
+      cookie.setHttpOnly(true);
+      cookie.setMaxAge(1200);
+      // HTTPS ONLY!
+      //cookie.setSecure(true);
+      cookie.setDomain("localhost");
+      cookie.setPath("/");
+
+      response.addCookie(cookie);
+
+      // Argument for javascript notify() function.
+      // notify attribute includes alert.html fragment.
+      redirectAttributes.addFlashAttribute("notify", true);
+      redirectAttributes.addFlashAttribute("notifyString", "Signed in succesfully!");
+
+      return "redirect:/";
+    }
+
+    return "login";
   }
 
   @GetMapping(path = "/register")
@@ -96,14 +190,16 @@ public class ViewController {
   @PostMapping(path = "/register")
   public String register(
       @ModelAttribute("registrationDto") RegistrationDto registrationDto, 
-      Model model, Errors errors, RedirectAttributes redirectAttributes,
-      HttpSession httpSession
+      Model model, Errors errors, 
+      RedirectAttributes redirectAttributes
       ) {
+
     System.out.println(
         "Input from a form received for registration :: "
         + timestamper.timestamp()
         + " ->" + registrationDto.toString()
         );
+
     // Check that "repeat password" input matches first "password" input.
     if (!registrationDto.getPassword().equals(registrationDto.getPassword_verify())) {
       model.addAttribute("verifyPasswordError", "Passwords did not match each other!");
@@ -113,14 +209,41 @@ public class ViewController {
     userDao.save(
         new User(
           registrationDto.getEmail(),
-          registrationDto.getPassword(), 
-          Role.USER, 
-          UserStatus.ACTIVE, 
-          new Timestamp(new Date().getTime())
+          registrationDto.getUsername(),
+          registrationDto.getPassword(),
+          Role.USER,
+          UserStatus.ACTIVE,
+          new Date(System.currentTimeMillis())
         ));
 
-    // Add loggedIn attribute to the http session to indicate user is loggedIn
-    httpSession.setAttribute("loggedIn", true);
+    userDao.saveUserAuthorities(
+        new Authority(registrationDto.getEmail(), "READ")
+        );
+
+    // Argument for javascript notify() function.
+    // notify attribute includes alert.html fragment.
+    redirectAttributes.addFlashAttribute("notify", true);
+    redirectAttributes.addFlashAttribute("notifyString", "Registration was succesful!");
+
+    return "redirect:/";
+  }
+
+  @PostMapping(path = "/logout")
+  public String logout(
+      Model model,
+      RedirectAttributes redirectAttributes,
+      HttpServletResponse response
+      ) {
+    var cookie = new Cookie("token", "");
+    cookie.setPath("/");
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
+
+    // Argument for javascript notify() function.
+    // notify attribute includes alert.html fragment.
+    redirectAttributes.addFlashAttribute("notify", true);
+    redirectAttributes.addFlashAttribute("notifyString", "Logged out succesfully");
+
     return "redirect:/";
   }
 
@@ -133,8 +256,42 @@ public class ViewController {
 
   @GetMapping(path = "/profile")
   public String profile(
-      Model model
+      Model model,
+      RedirectAttributes redirectAttributes,
+      HttpServletRequest request
       ) {
-    return "profile";
+
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (var cookie : cookies) {
+        if ("token".equals(cookie.getName())) {
+          HashMap<String, Object> jwtBody = jwtHandler.verifyToken(cookie.getValue());
+          String email = (String)jwtBody.get("email");
+          String username = (String)jwtBody.get("username");
+          //String role = (String)jwtBody.get("role");
+          //String created = (String)jwtBody.get("created");
+          //String authorities = (String)jwtBody.get("authorities");
+
+          var result = userDao.findByEmail(email);
+
+          if (result != null) {
+            if (email.equals(result.getEmail())) {
+              System.out.println("You are authenticated!");
+              System.out.println(result);
+              System.out.println("--- JWT ---");
+              System.out.println(jwtBody);
+              model.addAttribute("user", result);
+              //model.addAttribute("username", username);
+              //model.addAttribute("role", role);
+              //model.addAttribute("created", created);
+              //model.addAttribute("authorities", authorities);
+              return "profile";
+            }
+          }
+        }
+      }
+    }
+
+    return "redirect:/";
   }
 }

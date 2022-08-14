@@ -4,6 +4,7 @@ import demo.entities.enums.Role;
 import demo.entities.enums.UserStatus;
 
 import java.sql.Timestamp;
+import java.sql.Date;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -67,6 +68,10 @@ public class User extends AbstractEntity {
   private String email;
 
   @NonNull
+  @Column(name = "username", unique = true, length = 254, nullable = false)
+  private String username;
+
+  @NonNull
   @Column(name = "password", length = 255, nullable = false)
   private String password;
 
@@ -82,10 +87,13 @@ public class User extends AbstractEntity {
 
   @NonNull
   @Column(name = "created", nullable = false, updatable = false)
-  private Timestamp created;
+  private Date created;
 
   @Column(name = "updated", nullable = true, updatable = true)
   private Timestamp updated;
+
+  @Column(name = "lastloggedin", nullable = true, updatable = true)
+  private Timestamp lastloggedin;
 
   @Column(name = "version", nullable = true, updatable = true)
   private int version; // 0 by default
@@ -102,6 +110,7 @@ public class User extends AbstractEntity {
     builder.append(" userstatus: " + userstatus + newline);
     builder.append(" created: " + created + newline);
     builder.append(" updated: " + updated + newline);
+    builder.append(" lastloggedin: " + lastloggedin + newline);
     builder.append(" version: " + version + newline);
     builder.append("}");
 

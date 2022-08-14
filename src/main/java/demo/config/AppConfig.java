@@ -2,6 +2,8 @@ package demo.config;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -18,6 +20,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import demo.utils.JwtHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -46,6 +49,29 @@ public class AppConfig {
   @Getter(AccessLevel.PUBLIC)
   @Value("${jdbc.url}")
   private String jdbcUrl;
+
+  @Getter(AccessLevel.PUBLIC)
+  @Value("${jwt.secret}")
+  private String jwtSecret;
+
+  @Bean
+  public JwtHandler jwtHandler() {
+    JwtHandler jwtHandler = new JwtHandler(jwtSecret);
+    var token = jwtHandler.createToken(
+        Map.of(
+            "name", "test user",
+            "email", "testing@meow.com",
+            "admin", "true"
+            ), 
+        LocalDateTime.now().plusMinutes(20)
+        );
+
+    System.out.println("JWT Generated -> " + token);
+    System.out.println("--------- TOKEN VERIFICATION ---------");
+    System.out.println(jwtHandler.verifyToken(token));
+
+    return jwtHandler;
+  }
 
   @Bean
   public DataSource dataSource() throws SQLException {

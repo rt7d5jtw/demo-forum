@@ -1,6 +1,9 @@
 package demo.dao;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.exception.GenericJDBCException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +11,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import demo.dao.exceptions.UserNotFoundException;
+import demo.dao.exceptions.AuthorityNotFoundException;
 import demo.entities.User;
+import demo.entities.Authority;
 
 import java.util.List;
 
@@ -68,6 +75,30 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Transactional
+  public Authority findUserAuthorities(String email) {
+    Authority authority = (Authority) sessionFactory
+      .getCurrentSession()
+      .getNamedQuery("Authority.findByEmail")
+      .setParameter("email", email)
+      .uniqueResult();
+
+    if (authority != null)
+      return authority;
+
+    throw new AuthorityNotFoundException(email);
+  }
+
+  @Transactional
+  public Authority saveUserAuthorities(Authority authority) {
+    logger.info("User Authorities saved with id: " + authority.getId());
+    sessionFactory
+      .getCurrentSession()
+      .saveOrUpdate(authority);
+
+    return authority;
+  }
+
+  @Transactional
   public User save(User user) {
     // Hash and salt the user password
     String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(12));
@@ -81,10 +112,22 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Transactional
+  public void updateLastLoggedIn(String email) {
+    User user = this.findByEmail(email);
+    if (user != null) {
+      user.setLastloggedin(new Timestamp(new Date().getTime()));
+      sessionFactory
+        .getCurrentSession()
+        .update(user);
+    }
+  }
+
+  @Transactional
   public void delete(User user) {
     sessionFactory
       .getCurrentSession()
       .delete(user);
     logger.info("User deleted with id: " + user.getId());
   }
+
 }

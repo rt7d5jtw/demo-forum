@@ -18,6 +18,9 @@ public class UserDto {
   private String email;
 
   @NonNull
+  private String username;
+
+  @NonNull
   private String password;
 
   @Override
@@ -27,6 +30,7 @@ public class UserDto {
 
     builder.append(this.getClass().getName() + " {" + newline);
     builder.append(" email: " + email + newline);
+    builder.append(" email: " + username + newline);
     builder.append(" password: " + password + newline);
     builder.append("}");
 

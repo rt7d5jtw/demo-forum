@@ -2,20 +2,25 @@
 create table users (
 	id int not null primary key,
 	email varchar(254) not null,
+	username varchar(254) not null,
 	password varchar(255) not null,
   role varchar(10),
   user_status varchar(40),
-	created timestamp,
+	created date,
 	updated timestamp,
+	lastloggedin timestamp,
 	version int default 0,
-	unique (email)
+	unique (email),
+	unique (username)
 );
 
 -- Authorities
 create table authorities (
+	id int not null primary key,
 	email varchar(50) not null,
 	authority varchar(50) not null,
-	constraint fk_authorities_users foreign key(email) references users(email)
+	constraint fk_authorities_users foreign key(email) references users(email),
+	unique (email)
 );
 create unique index ix_auth_email on authorities (email,authority);
 

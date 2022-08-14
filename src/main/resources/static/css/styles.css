@@ -55,7 +55,9 @@ main {
   border-right: 1px solid #ffffff26;
 }
 
-.subheader_subsection a { 
+.subheader_subsection, .subheader_subsection a { 
+  display: flex;
+  align-items: center;
   color: beige;
   padding-right: 1rem; 
 }
@@ -120,4 +122,29 @@ main {
   align-items: center;
   justify-content: center;
   border: 1px solid #fffc;
+}
+
+#logout {
+ border: none; 
+ padding: 0.75em 1.75em;
+ color: beige;
+ background: transparent;
+ font-size: 1.075rem;
+ text-decoration: underline;
+ cursor: pointer;
+}
+
+/* Notification UI */
+.notification {
+  font-size: 1.2rem;
+  position: fixed;
+  z-index: 99999;
+  color: transparent;
+  background: transparent;
+  padding: 0.75rem;
+  top: 25%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -100px;
+  transition: 1.5s;
 }
