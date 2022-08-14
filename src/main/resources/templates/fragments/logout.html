@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <form 
+    th:fragment="logout" 
+    class="logout"
+    th:action="@{/logout}"
+    method="post">
+    <input 
+      name="logout" 
+      id="logout" 
+      type="submit" 
+      value="Log out">
+  </form>
+</html>

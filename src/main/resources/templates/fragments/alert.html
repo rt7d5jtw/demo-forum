@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <script th:fragment="alert" th:inline="javascript">
+    const notifyString = /*[[${notifyString}]]*/;
+    setTimeout(() => notify(notifyString), 500);
+  </script>
+</html>

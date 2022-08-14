@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="subheader" class="subheader">
+    <section class="subheader_subsection">
+      <a href="/search">Search</a>
+      <a href="/faq">FAQ</a>
+      <button onclick="notify('meow!!!')">Press for notify!</button>
+    </section>
+    <!-- Make this only show up to non-authenticated users -->
+    <section class="subheader_subsection">
+      <a href="/signin">Sign in</a>
+      <a href="/register">Register</a>
+    </section>
+   </div>
+</html>

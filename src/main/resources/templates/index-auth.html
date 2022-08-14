@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="This is an example of a meta description.">
+  <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <script type="text/javascript" th:src="@{/js/alert.js}"></script>
+  <!-- This will conditionally include alert.html if notify attribute is included -->
+  <div th:replace="${notify} ? ~{fragments/alert.html :: alert} : ~{}"></div>
+  <title>Demo Forums</title>
+</head>
+  <body>
+  <main>
+    <div th:replace="fragments/header.html :: header"></div>
+    <div th:replace="fragments/subheader-auth.html :: subheader-auth"></div>
+    <div th:replace="fragments/main.html :: main"></div>
+  </main>
+</html>

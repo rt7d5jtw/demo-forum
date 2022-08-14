@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="This is an example of a meta description.">
+  <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <title>My Profile | Demo Forums</title>
+</head>
+  <body>
+  <main>
+    Profile
+        <h2>Result</h2>
+    <table>
+        <tbody>
+            <tr>
+                <td><strong>ID:</strong></td>
+                <td><span th:text="${user.id}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Username:</strong></td>
+                <td><span th:text="${user.username}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td><span th:text="${user.email}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Role:</strong></td>
+                <td><span th:text="${user.role}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>UserStatus:</strong></td>
+                <td><span th:text="${user.userstatus}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Created:</strong></td>
+                <td><span th:text="${user.created}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Updated:</strong></td>
+                <td><span th:text="${user.updated}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Last logged in:</strong></td>
+                <td><span th:text="${user.lastloggedin}"></span></td>
+            </tr>
+        </tbody>
+    </table>
+  </main>
+  </body>
+</html>

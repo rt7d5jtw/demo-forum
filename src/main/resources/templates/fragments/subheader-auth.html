@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="subheader-auth" class="subheader">
+    <section class="subheader_subsection">
+      <a href="/search">Search</a>
+      <a href="/faq">FAQ</a>
+    </section>
+    <!-- Make this only show up to authenticated users -->
+    <section class="subheader_subsection">
+      <a href="/profile">Profile</a>
+      <div th:replace="fragments/logout.html :: logout"></div>
+    </section>
+  </div>
+</html>
