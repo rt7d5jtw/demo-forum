@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="profile-main" class="content">
+    <header class="forum_header profile_header">Profile</header>
+    <section class="forum_section profile_section">
+    <table class="profile_table">
+      <tbody>
+        <tr>
+          <td><strong>ID:</strong></td>
+          <td><span th:text="${user.id}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Username:</strong></td>
+          <td><span th:text="${user.username}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Email:</strong></td>
+          <td><span th:text="${user.email}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Role:</strong></td>
+          <td><span th:text="${user.role}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>UserStatus:</strong></td>
+          <td><span th:text="${user.userstatus}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Created:</strong></td>
+          <td><span th:text="${user.created}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Updated:</strong></td>
+          <td><span th:text="${user.updated}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Last logged in:</strong></td>
+          <td><span th:text="${user.lastloggedin}"></span></td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</html>
