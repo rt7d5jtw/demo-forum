@@ -148,3 +148,43 @@ main {
   margin-left: -100px;
   transition: 1.5s;
 }
+
+.faq_header {
+  display: flex;
+  justify-content: space-around;
+}
+.faq_header h3, .faq_header i {
+  margin: 0;
+  padding: 0;
+  line-height: initial;
+}
+
+.faq_section {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  height: 100%;
+}
+
+.faq_article {
+  border: 1px solid #b5b5a340;
+  padding: 1rem;
+}
+
+.profile_header {
+  padding-left: 1.2rem;
+}
+
+.profile_section {
+  display: flex;
+  padding: 1rem;
+  height: 100%;
+}
+
+.profile_table th, .profile_table td {
+  border: 1px solid;
+  width: 20vw;
+  vertical-align: middle;
+  text-align: start;
+  padding: 10px;
+}
