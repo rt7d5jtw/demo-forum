@@ -1,6 +1,7 @@
 package demo.entities;
 
 import java.sql.Timestamp;
+import java.sql.Date;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -51,7 +52,7 @@ public class Post extends AbstractEntity {
 
   @NonNull
   @Column(name = "created", nullable = false, updatable = false)
-  private Timestamp created;
+  private Date created;
 
   @NonNull
   @Column(name = "updated", nullable = true, updatable = true)

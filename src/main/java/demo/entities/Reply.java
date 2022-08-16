@@ -1,6 +1,7 @@
 package demo.entities;
 
 import java.sql.Timestamp;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class Reply extends AbstractEntity {
 
   @NonNull
   @Column(name = "created", nullable = false, updatable = false)
-  private Timestamp created;
+  private Date created;
 
   @NonNull
   @Column(name = "updated", nullable = true, updatable = true)
