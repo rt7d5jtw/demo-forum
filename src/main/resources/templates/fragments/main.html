@@ -2,19 +2,19 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
   <div th:fragment="main" class="content">
     <header class="forum_header">Forums</header>
-    <section class="forum_section">
-      <a href="" title="Click here to continue to the topic link">
+    <section th:each="category : ${categories}" class="forum_section">
+      <a th:href="@{/topic(categoryId=${category.id})}" href="/topic" title="Click here to continue to the topic link">
       <div class="forum_section_desc">
-        <h3>Forum Topic</h3>
-        <p>Discussions about the main thing.</p>
+        <h3 th:text="${category.topic}"></h3>
+        <p th:text="${category.topicDescription}"></p>
       </div>
       </a>
       <div class="forum_section_stats">
-        <p>Threads:</p>
-        <p>Posts:</p>
+        <p>Threads: <th:block th:text="${category.amountThreads}"></th:block></p>
+        <p>Posts: <th:block th:text="${category.amountPosts}"></th:block></p>
       </div>
       <div class="forum_section_lastpost">
-        <p>Last poster:</p>
+        <p>Last poster: <th:block th:text="${category.lastPost}"></th:block></p>
       </div>
     </section>
   </div>

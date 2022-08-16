@@ -2,6 +2,7 @@ package demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
@@ -18,8 +19,10 @@ import demo.entities.enums.Role;
 import demo.entities.enums.UserStatus;
 import demo.entities.dtos.RegistrationDto;
 import demo.entities.User;
+import demo.entities.Category;
 import demo.entities.Authority;
 import demo.dao.UserDao;
+import demo.dao.CategoryDao;
 import demo.utils.JwtHandler;
 import demo.utils.Timestamper;
 
@@ -28,6 +31,7 @@ import java.time.LocalDateTime;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -41,16 +45,19 @@ import javax.validation.Valid;
 public class ViewController {
 
   private UserDao userDao;
+  private CategoryDao categoryDao;
   private Timestamper timestamper;
   private JwtHandler jwtHandler;
 
   @Autowired
   private ViewController(
-      UserDao userDao, 
+      UserDao userDao,
+      CategoryDao categoryDao,
       Timestamper timestamper,
       JwtHandler jwtHandler
       ) {
     this.userDao = userDao;
+    this.categoryDao = categoryDao;
     this.timestamper = timestamper;
     this.jwtHandler = jwtHandler;
   }
@@ -64,6 +71,10 @@ public class ViewController {
       ) {
     System.out.println("auth header: ");
     System.out.println(request.getHeader("Authorization"));
+
+    // Get all categories for the homepage.
+    List<Category> categories = categoryDao.findAll();
+    model.addAttribute("categories", categories);
 
     System.out.println("cookies: ");
     Cookie[] cookies = request.getCookies();
@@ -119,7 +130,7 @@ public class ViewController {
   @PostMapping(path = "/signin")
   public String signin(
       @Valid
-      @ModelAttribute("userDto") UserDto userDto, 
+      @ModelAttribute("userDto") UserDto userDto,
       Model model,
       RedirectAttributes redirectAttributes,
       HttpServletResponse response
@@ -148,14 +159,14 @@ public class ViewController {
               "role", foundUser.getRole(),
               "authorities", userAuthorities.getAuthority(),
               "created", foundUser.getCreated()
-              ), 
+              ),
           LocalDateTime.now().plusMinutes(20)
           );
       System.out.println("Token -> " + token);
 
       // Store JWT access token to http only cookies
       var cookie = new Cookie(
-          "token", 
+          "token",
           token
           );
 
@@ -189,8 +200,8 @@ public class ViewController {
 
   @PostMapping(path = "/register")
   public String register(
-      @ModelAttribute("registrationDto") RegistrationDto registrationDto, 
-      Model model, Errors errors, 
+      @ModelAttribute("registrationDto") RegistrationDto registrationDto,
+      Model model, Errors errors,
       RedirectAttributes redirectAttributes
       ) {
 
@@ -281,10 +292,6 @@ public class ViewController {
               System.out.println("--- JWT ---");
               System.out.println(jwtBody);
               model.addAttribute("user", result);
-              //model.addAttribute("username", username);
-              //model.addAttribute("role", role);
-              //model.addAttribute("created", created);
-              //model.addAttribute("authorities", authorities);
               return "profile";
             }
           }
@@ -294,4 +301,27 @@ public class ViewController {
 
     return "redirect:/";
   }
+
+  // Describes a specific topic
+  // e.g. /topic/categoryId=2
+  // Fetch topic relevant threads, posts and comments
+  @GetMapping(path = "/topic")
+  public String faq(
+      @RequestParam(required = true, name = "categoryId") Integer id
+      Model model,
+      RedirectAttributes redirectAttributes,
+      HttpServletRequest request,
+      HttpServletResponse response
+      ) {
+    List<Category> category = categoryDao.findById(id);
+    if (category != null) {
+      // @TODO: Implement rest of topic-main.html page
+      // and add rest of the stuff here.
+      model.addAttribute("category", category);
+      return "topic";
+    }
+
+    return "redirect:/"
+  }
+
 }

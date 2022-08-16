@@ -28,7 +28,10 @@ create unique index ix_auth_email on authorities (email,authority);
 create table categories (
 	id int not null primary key,
 	topic varchar(100) not null,
-  description text,
+	topic_description varchar(255) not null,
+	amount_threads int not null,
+	amount_posts int not null,
+	last_post varchar(100),
 	created timestamp,
 	updated timestamp,
 	unique (topic)

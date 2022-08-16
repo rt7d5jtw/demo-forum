@@ -23,6 +23,10 @@ init:
 	docker cp schema.sql $(MARIADB_ID):/
 	docker exec -t $(MARIADB_ID) mysql -u testuser -pmeow -e "use forum; source schema.sql; show tables"
 
+mockdata:
+	docker cp mockdata.sql $(MARIADB_ID):/
+	docker exec -t $(MARIADB_ID) mysql -u testuser -pmeow -e "use forum; source mockdata.sql;"
+
 # For inspecting the tables
 show-schema:
 	docker exec -t $(MARIADB_ID) mysql -u testuser -pmeow -e "use forum; show columns from users;"
@@ -40,4 +44,4 @@ clean:
 	sleep 5
 	docker rm $(MARIADB_ID)
 
-.PHONY: clean desc show-schema init logs local volume network all
+.PHONY: clean desc show-schema init logs local volume network all mockdata

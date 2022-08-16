@@ -91,6 +91,9 @@ main {
   color: antiquewhite;
   display: contents;
 }
+.forum_section div {
+  width: 5%;
+}
 
 .forum_section_desc {
   font-size: 1rem;
@@ -120,8 +123,9 @@ main {
   display: flex;
   flex-grow: 1;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   border: 1px solid #fffc;
+  padding: 1rem;
 }
 
 #logout {
