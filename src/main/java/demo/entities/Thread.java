@@ -1,6 +1,10 @@
 package demo.entities;
 
 import java.sql.Timestamp;
+import java.sql.Date;
+
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,12 +27,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@NamedQueries({
+  @NamedQuery(
+    name = "Thread.findAll", 
+    query = "from thread"
+  ),
+  @NamedQuery(
+    name = "Thread.findById",
+    query = "from thread u where u.id = :id"
+  )
+})
 public class Thread extends AbstractEntity {
 
+  @NonNull
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private Category category;
 
+  @NonNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
@@ -43,7 +59,7 @@ public class Thread extends AbstractEntity {
 
   @NonNull
   @Column(name = "created", nullable = false, updatable = false)
-  private Timestamp created;
+  private Date created;
 
   @NonNull
   @Column(name = "updated", nullable = true, updatable = true)

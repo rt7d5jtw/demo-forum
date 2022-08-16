@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="create-thread" class="content thread_form">
+    <section class="thread_forum_section faq_section">
+    <h1>Create a new thread <th:block th:text="${category.topic}"></th:block></h1>
+    <form 
+      class="thread_form" 
+      th:action="@{/thread}" 
+      th:object="${threadDto}"
+      method="post"
+      accept-charset="utf-8"
+      id="threadform"
+      >
+      <div class="inputbox">
+        <label for="">Thread subject</label>
+        <input 
+          type="text" 
+          name="subject" 
+          id="subject" 
+          placeholder="Enter subject" 
+          th:field="*{subject}"
+          >
+        <div 
+          class="alert alert-warning"
+          th:if="${#fields.hasErrors('subject')}"
+          th:errors="*{subject}"
+          ></div>
+      </div>
+      <div class="inputbox">
+        <label for="">Content</label>
+        <textarea
+          form="threadform" 
+          name="content" 
+          id="content" 
+          placeholder="Enter text.."
+          rows=10
+          cols=20
+          ></textarea>
+      </div>
+      <div class="btn">
+        <div th:replace="fragments/post-thread.html :: post-thread"></div>
+      </div>
+    </form>
+    </section>
+  </div>
+</html>

@@ -2,6 +2,9 @@ package demo.entities;
 
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,6 +25,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@NamedQueries({
+  @NamedQuery(
+    name = "Post.findAll", 
+    query = "from post"
+  ),
+  @NamedQuery(
+    name = "Post.findById",
+    query = "from post u where u.id = :id"
+  )
+})
 public class Post extends AbstractEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)

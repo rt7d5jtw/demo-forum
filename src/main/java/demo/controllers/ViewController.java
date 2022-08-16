@@ -3,6 +3,7 @@ package demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
@@ -13,16 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.FlashMap;
+import org.springframework.http.CacheControl;
 
 import demo.entities.dtos.UserDto;
 import demo.entities.enums.Role;
 import demo.entities.enums.UserStatus;
 import demo.entities.dtos.RegistrationDto;
+import demo.entities.dtos.ThreadDto;
 import demo.entities.User;
 import demo.entities.Category;
 import demo.entities.Authority;
+import demo.entities.Thread;
 import demo.dao.UserDao;
 import demo.dao.CategoryDao;
+import demo.dao.ThreadDao;
 import demo.utils.JwtHandler;
 import demo.utils.Timestamper;
 
@@ -46,6 +51,7 @@ public class ViewController {
 
   private UserDao userDao;
   private CategoryDao categoryDao;
+  private ThreadDao threadDao;
   private Timestamper timestamper;
   private JwtHandler jwtHandler;
 
@@ -53,11 +59,13 @@ public class ViewController {
   private ViewController(
       UserDao userDao,
       CategoryDao categoryDao,
+      ThreadDao threadDao,
       Timestamper timestamper,
       JwtHandler jwtHandler
       ) {
     this.userDao = userDao;
     this.categoryDao = categoryDao;
+    this.threadDao = threadDao;
     this.timestamper = timestamper;
     this.jwtHandler = jwtHandler;
   }
@@ -73,6 +81,7 @@ public class ViewController {
     System.out.println(request.getHeader("Authorization"));
 
     // Get all categories for the homepage.
+    // @TODO: Cache this
     List<Category> categories = categoryDao.findAll();
     model.addAttribute("categories", categories);
 
@@ -100,6 +109,9 @@ public class ViewController {
                 model.addAttribute("notifyString", inputFlashMap.get("notifyString"));
               }
 
+              // @TODO: Cache categories | HTTP CACHE
+              // IMPLEMENTATION
+
               return "index-auth";
             }
           }
@@ -112,6 +124,9 @@ public class ViewController {
       model.addAttribute("notify", true);
       model.addAttribute("notifyString", inputFlashMap.get("notifyString"));
     }
+
+    // @TODO: Cache categories | HTTP CACHE
+    // IMPLEMENTATION
 
     return "index";
   }
@@ -303,25 +318,71 @@ public class ViewController {
   }
 
   // Describes a specific topic
-  // e.g. /topic/categoryId=2
+  // e.g. /topic?categoryId=2
   // Fetch topic relevant threads, posts and comments
   @GetMapping(path = "/topic")
   public String faq(
-      @RequestParam(required = true, name = "categoryId") Integer id
+      @RequestParam(required = true, name = "categoryId") Integer id,
       Model model,
       RedirectAttributes redirectAttributes,
       HttpServletRequest request,
       HttpServletResponse response
       ) {
-    List<Category> category = categoryDao.findById(id);
+
+    Category category = categoryDao.findById(id);
     if (category != null) {
       // @TODO: Implement rest of topic-main.html page
       // and add rest of the stuff here.
       model.addAttribute("category", category);
+      //redirectAttributes.addFlashAttribute("notifyString", "Registration was succesful!");
       return "topic";
     }
 
-    return "redirect:/"
+    return "redirect:/";
+  }
+
+  @GetMapping(path = "/topic/thread/{topicId}")
+  public String threadPage(
+      @PathVariable(required = true, name = "topicId") Integer topicId,
+      @ModelAttribute("threadDto") ThreadDto threadDto,
+      Model model
+      ) {
+    Category category = categoryDao.findById(topicId);
+    if (category != null) {
+      model.addAttribute("category", category);
+      return "thread";
+    }
+
+    return "redirect:/topic";
+  }
+
+  @PostMapping(path = "/thread")
+  public String thread(
+      @ModelAttribute("threadDto") ThreadDto threadDto,
+      RedirectAttributes redirectAttributes,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Model model
+      ) {
+
+    Category category = categoryDao.findById(threadDto.getCategoryId());
+    User user = userDao.findById(threadDto.getUserId());
+    if (category != null && user != null) {
+      threadDao.save(
+          new Thread(
+            category,
+            user,
+            threadDto.getSubject(),
+            threadDto.getContent(),
+            new Date(System.currentTimeMillis()),
+            null
+          ));
+
+      redirectAttributes.addAttribute("categoryId", threadDto.getCategoryId());
+      return "redirect:/topic";
+    }
+
+    return "thread";
   }
 
 }

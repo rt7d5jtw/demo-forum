@@ -192,3 +192,39 @@ main {
   text-align: start;
   padding: 10px;
 }
+
+.thread_forum {
+  align-items: center;
+}
+.thread_forum h1 { padding: 1rem; }
+.thread_form {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid white;
+  padding: 1.5rem;
+}
+.thread_form div {
+  display: flex;
+  flex-direction: column;
+}
+.thread_form #subject {
+  font-size: 1.15rem;
+}
+.thread_form #content {
+  font-size: 1.25rem;
+}
+.thread_forum_section {
+  display: flex;
+  font-size: 1.8rem;
+  height: 100px;
+  width: auto;
+}
+
+.post-thread {
+  border: none;
+  background: beige;
+  color: #58181F;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}

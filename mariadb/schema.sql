@@ -32,7 +32,7 @@ create table categories (
 	amount_threads int not null,
 	amount_posts int not null,
 	last_post varchar(100),
-	created timestamp,
+	created date,
 	updated timestamp,
 	unique (topic)
 );
@@ -44,7 +44,7 @@ create table threads (
 	user_id int not null,
 	subject varchar(100) not null,
   content text,
-	created timestamp,
+	created date,
 	updated timestamp,
   constraint fk_thread_category foreign key (category_id) references categories (id),
   constraint fk_thread_user foreign key (user_id) references users (id)
@@ -56,7 +56,7 @@ create table posts (
 	thread_id int not null,
 	user_id int not null,
   content text,
-	created timestamp,
+	created date,
 	updated timestamp,
 	constraint fk_post_thread foreign key (thread_id) references threads (id),
 	constraint fk_post_user foreign key (user_id) references users (id)
@@ -68,7 +68,7 @@ create table replies (
   post_id int not null,
   user_id int not null,
   content text not null,
-	created timestamp,
+	created date,
 	updated timestamp,
   constraint fk_reply_post foreign key (post_id) references posts (id),
 	constraint fk_reply_user foreign key (user_id) references users (id)

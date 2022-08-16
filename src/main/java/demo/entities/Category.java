@@ -36,7 +36,6 @@ import lombok.RequiredArgsConstructor;
     query = "from category u where u.topic= :topic"
   )
 })
-
 public class Category extends AbstractEntity {
 
   @NonNull
