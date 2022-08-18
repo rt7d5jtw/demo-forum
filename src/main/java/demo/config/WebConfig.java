@@ -70,6 +70,8 @@ public class WebConfig implements WebMvcConfigurer {
     registry
       .addViewController("/profile").setViewName("profile");
     registry
+      .addViewController("/search").setViewName("search");
+    registry
       .addViewController("/category").setViewName("category");
     registry
       .addViewController("/threadform").setViewName("threadform");

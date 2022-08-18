@@ -5,10 +5,14 @@
       <a href="/search">Search</a>
       <a href="/faq">FAQ</a>
     </section>
-    <!-- Only shows up to authenticated users -->
     <section class="subheader_subsection">
       <a href="/">Go back to homepage</a>
-      <div th:replace="fragments/logout.html :: logout"></div>
+
+      <!-- Only shows up to authenticated users -->
+      <div th:if="${authenticated}">
+        <div 
+          th:replace="fragments/logout.html :: logout"></div>
+      </div>
     </section>
   </div>
 </html>

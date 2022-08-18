@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="searchview" class="content">
+    <header class="forum_header faq_header">
+      <h3>Search</h3>
+    </header>
+    <!-- Search -->
+    <section class="forum_search">
+      <div class="forum_search_keywords">
+        <div>
+          <label for="search">Search by keywords:</label>
+          <input type="text" id="search" name="search">
+        </div>
+      </div>
+      <div class="forum_search_author">
+        <label for="search">Search by author:</label>
+        <input type="text" id="search_by_author" name="search_by_author">
+      </div>
+      <div class="forum_search_category">
+        <label for="search">Search by category:</label>
+        <input type="text" id="search_by_category" name="search_by_category">
+      </div>
+      <div class="forum_search_options">
+        <label for="search">Search options:</label>
+        <input type="radio" class="radio" value="0">
+      </div>
+    </section>
+  </div>
+</html>

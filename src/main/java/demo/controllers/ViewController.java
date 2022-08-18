@@ -275,8 +275,10 @@ public class ViewController {
 
   @GetMapping(path = "/faq")
   public String faq(
-      Model model
+      Model model,
+      HttpServletRequest request
       ) {
+    User user = this.authenticate(request, model);
     return "faq";
   }
 
@@ -287,13 +289,31 @@ public class ViewController {
       HttpServletRequest request
       ) {
 
-    User user = this.authenticate(request);
+    User user = this.authenticate(request, model);
     if (user != null) {
       model.addAttribute("user", user);
       return "profile";
     }
 
     return "redirect:/";
+  }
+
+  @GetMapping(path = "/search")
+  public String searchPage(
+      Model model,
+      HttpServletRequest request
+      ) {
+    User user = this.authenticate(request, model);
+    return "search";
+  }
+
+  @PostMapping(path = "/search")
+  public String searchPage(
+      Model model,
+      HttpServletRequest request
+      ) {
+    User user = this.authenticate(request, model);
+    return "search";
   }
 
   // Describes a specific category
@@ -330,7 +350,7 @@ public class ViewController {
       HttpServletRequest request
       ) {
 
-    User user = this.authenticate(request);
+    User user = this.authenticate(request, model);
     Category category = categoryDao.findById(categoryId);
     if (category != null && user != null) {
       model.addAttribute("category", category);
@@ -354,7 +374,7 @@ public class ViewController {
     Category category = categoryDao.findById(categoryId);
     System.out.println("-------------- ThreadDto --------------");
     System.out.println(threadDto.toString());
-    User user = this.authenticate(request);
+    User user = this.authenticate(request, model);
     if (user != null) {
       System.out.println("-------------- User --------------");
       System.out.println(user);
@@ -407,7 +427,7 @@ public class ViewController {
    * and verifies it by matching the email 
    * returns the User if succesful.
    * */
-  private User authenticate(HttpServletRequest request) {
+  private User authenticate(HttpServletRequest request, Model model) {
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
       for (var cookie : cookies) {
@@ -417,6 +437,7 @@ public class ViewController {
           var result = userDao.findByEmail(email);
           if (result != null) {
             if (email.equals(result.getEmail())) {
+              model.addAttribute("authenticated", true);
               return result;
             }
           }
