@@ -3,7 +3,7 @@
   <div th:fragment="main" class="content">
     <header class="forum_header">Forums</header>
     <section th:each="category : ${categories}" class="forum_section">
-      <a th:href="@{/topic(categoryId=${category.id})}" href="/topic" title="Click here to continue to the topic link">
+      <a th:href="@{/category(categoryId=${category.id})}" href="/topic" title="Click here to continue to the topic link">
       <div class="forum_section_desc">
         <h3 th:text="${category.topic}"></h3>
         <p th:text="${category.topicDescription}"></p>

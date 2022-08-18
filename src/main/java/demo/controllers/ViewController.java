@@ -287,40 +287,19 @@ public class ViewController {
       HttpServletRequest request
       ) {
 
-    Cookie[] cookies = request.getCookies();
-    if (cookies != null) {
-      for (var cookie : cookies) {
-        if ("token".equals(cookie.getName())) {
-          HashMap<String, Object> jwtBody = jwtHandler.verifyToken(cookie.getValue());
-          String email = (String)jwtBody.get("email");
-          String username = (String)jwtBody.get("username");
-          //String role = (String)jwtBody.get("role");
-          //String created = (String)jwtBody.get("created");
-          //String authorities = (String)jwtBody.get("authorities");
-
-          var result = userDao.findByEmail(email);
-
-          if (result != null) {
-            if (email.equals(result.getEmail())) {
-              System.out.println("You are authenticated!");
-              System.out.println(result);
-              System.out.println("--- JWT ---");
-              System.out.println(jwtBody);
-              model.addAttribute("user", result);
-              return "profile";
-            }
-          }
-        }
-      }
+    User user = this.authenticate(request);
+    if (user != null) {
+      model.addAttribute("user", user);
+      return "profile";
     }
 
     return "redirect:/";
   }
 
-  // Describes a specific topic
-  // e.g. /topic?categoryId=2
-  // Fetch topic relevant threads, posts and comments
-  @GetMapping(path = "/topic")
+  // Describes a specific category
+  // e.g. /category?categoryId=2
+  // Fetch category relevant threads, posts and comments
+  @GetMapping(path = "/category")
   public String faq(
       @RequestParam(required = true, name = "categoryId") Integer id,
       Model model,
@@ -328,61 +307,124 @@ public class ViewController {
       HttpServletRequest request,
       HttpServletResponse response
       ) {
+    List<Thread> threads = threadDao.findAll();
+    model.addAttribute("threads", threads);
 
     Category category = categoryDao.findById(id);
     if (category != null) {
-      // @TODO: Implement rest of topic-main.html page
+      // @TODO: Implement rest of category-main.html page
       // and add rest of the stuff here.
       model.addAttribute("category", category);
       //redirectAttributes.addFlashAttribute("notifyString", "Registration was succesful!");
-      return "topic";
+      return "category";
     }
 
     return "redirect:/";
   }
 
-  @GetMapping(path = "/topic/thread/{topicId}")
-  public String threadPage(
-      @PathVariable(required = true, name = "topicId") Integer topicId,
+  @GetMapping(path = "/category/create-thread/{categoryId}")
+  public String threadFormPage(
+      @PathVariable(required = true, name = "categoryId") Integer categoryId,
       @ModelAttribute("threadDto") ThreadDto threadDto,
-      Model model
+      Model model,
+      HttpServletRequest request
       ) {
-    Category category = categoryDao.findById(topicId);
-    if (category != null) {
+
+    User user = this.authenticate(request);
+    Category category = categoryDao.findById(categoryId);
+    if (category != null && user != null) {
       model.addAttribute("category", category);
-      return "thread";
+      model.addAttribute("user", user);
+      return "threadform";
     }
 
-    return "redirect:/topic";
+    return "redirect:/category";
   }
 
-  @PostMapping(path = "/thread")
-  public String thread(
+  @PostMapping(path = "/category/create-thread/{categoryId}")
+  public String threadForm(
+      @PathVariable(required = true, name = "categoryId") Integer categoryId,
+      @Valid
       @ModelAttribute("threadDto") ThreadDto threadDto,
       RedirectAttributes redirectAttributes,
       HttpServletRequest request,
       HttpServletResponse response,
       Model model
       ) {
+    Category category = categoryDao.findById(categoryId);
+    System.out.println("-------------- ThreadDto --------------");
+    System.out.println(threadDto.toString());
+    User user = this.authenticate(request);
+    if (user != null) {
+      System.out.println("-------------- User --------------");
+      System.out.println(user);
+    }
+    if (category != null) {
+      model.addAttribute("category", category);
+      //User user = userDao.findById(threadDto.getUserId());
+      if (category != null && user != null) {
+        threadDao.save(
+            new Thread(
+              category,
+              user,
+              threadDto.getSubject(),
+              threadDto.getContent(),
+              new Date(System.currentTimeMillis()),
+              new Timestamp(new java.util.Date().getTime())
+            ));
 
-    Category category = categoryDao.findById(threadDto.getCategoryId());
-    User user = userDao.findById(threadDto.getUserId());
-    if (category != null && user != null) {
-      threadDao.save(
-          new Thread(
-            category,
-            user,
-            threadDto.getSubject(),
-            threadDto.getContent(),
-            new Date(System.currentTimeMillis()),
-            null
-          ));
-
-      redirectAttributes.addAttribute("categoryId", threadDto.getCategoryId());
-      return "redirect:/topic";
+        redirectAttributes.addAttribute("categoryId", category.getId());
+        return "redirect:/category";
+      }
     }
 
-    return "thread";
+    return "threadform";
+  }
+
+  // Describes a specific thread in a category
+  // e.g. /category/thread?threadId=4
+  @GetMapping(path = "/category/thread")
+  public String threadPage(
+      @RequestParam(required = true, name = "threadId") Integer id,
+      @ModelAttribute("threadDto") ThreadDto threadDto,
+      Model model,
+      HttpServletRequest request
+      ) {
+
+    Thread forumThread = threadDao.eagerFindById(id);
+    User user = forumThread.getUser();
+    if (forumThread != null && user != null) {
+      model.addAttribute("thread", forumThread);
+      model.addAttribute("user", user);
+      return "thread";
+    }
+
+    return "redirect:/category";
+  }
+
+  /** 
+   * Checks for JWT token in the client cookies 
+   * and verifies it by matching the email 
+   * returns the User if succesful.
+   * */
+  private User authenticate(HttpServletRequest request) {
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (var cookie : cookies) {
+        if ("token".equals(cookie.getName())) {
+          HashMap<String, Object> jwtBody = jwtHandler.verifyToken(cookie.getValue());
+          String email = (String)jwtBody.get("email");
+          var result = userDao.findByEmail(email);
+          if (result != null) {
+            if (email.equals(result.getEmail())) {
+              return result;
+            }
+          }
+        }
+      }
+    }
+
+    return null;
   }
 
 }

@@ -220,6 +220,7 @@ main {
   width: auto;
 }
 
+/* Button styles for creating a thread */
 .post-thread {
   border: none;
   background: beige;
@@ -227,4 +228,62 @@ main {
   font-size: 1rem;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
+}
+
+.forum_thread_section {
+  display: flex;
+  flex-direction: row;
+}
+
+.forum_thread_section_author {
+  width: calc(100% / 8);
+  display: flex;
+	flex-direction: column;
+	padding: 1rem;
+  border: 1px solid #4d4d4db3;
+  align-items: start;
+}
+
+.forum_thread_section_author img {
+  height: 125px;
+  width: 125px;
+}
+
+.forum_thread_section_author p {
+  padding-top: 0.5rem;
+  font-size: 0.85em;
+}
+
+.forum_thread_section_post {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid #4d4d4db3;
+}
+
+.forum_thread_section_post_message {
+  padding: 0.5rem;
+}
+
+.forum_thread_section_post_status {
+  display: flex;
+  border: 1px solid #4d4d4db3;
+  justify-content: space-between;
+  padding: 0.25rem;
+}
+
+.forum_thread_section_author_username {
+  width: 100%;
+  padding-bottom: 0.75rem;
+}
+
+.forum_thread_section_author_username p {
+  text-align: center;
+}
+
+.forum_thread_section_author_other {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }

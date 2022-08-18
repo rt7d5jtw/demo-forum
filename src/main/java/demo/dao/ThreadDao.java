@@ -7,6 +7,7 @@ import demo.entities.Thread;
 public interface ThreadDao {
   List<Thread> findAll();
   Thread findById(Integer id);
+  Thread eagerFindById(Integer id);
   Thread save(Thread thread);
   void delete(Thread thread);
 }

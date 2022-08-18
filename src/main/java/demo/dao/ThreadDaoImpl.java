@@ -2,6 +2,7 @@ package demo.dao;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
+import org.hibernate.Hibernate;
 import org.hibernate.Transaction;
 import org.hibernate.exception.GenericJDBCException;
 import org.slf4j.Logger;
@@ -52,6 +53,27 @@ public class ThreadDaoImpl implements ThreadDao {
       .getNamedQuery("Thread.findById")
       .setParameter("id", id)
       .uniqueResult();
+  }
+
+  /** Eager fetching user for the findById method. */
+  @Transactional(readOnly = true)
+  public Thread eagerFindById(Integer id) {
+    try (Session session = sessionFactory.openSession()) {
+      Transaction tx = session.beginTransaction();
+
+      Thread forumThread = (Thread) session
+        .getNamedQuery("Thread.findById")
+        .setParameter("id", id)
+        .uniqueResult();
+
+      Hibernate.initialize(forumThread);
+      Hibernate.isInitialized(forumThread.getUser());
+      Hibernate.initialize(forumThread.getUser());
+
+      tx.commit();
+      session.close();
+      return forumThread;
+    }
   }
 
   @Transactional

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
-  <div th:fragment="topic-main" class="content">
+  <div th:fragment="category-main" class="content">
     <header class="forum_header faq_header">
       <h3><th:block th:text="${category.topic}"></th:block></h3>
-      <a th:href="@{/topic/thread/{id}(id = ${category.id})}" href="/thread">Create a new thread</a>
+      <a th:href="@{/category/create-thread/{id}(id = ${category.id})}" href="/thread">Create a new thread</a>
     </header>
+    <!-- Threads -->
     <section th:each="thread : ${threads}" class="forum_section">
-      <a th:href="@{/topic(threadId=${thread.id})}" href="/topic" title="Click here to continue to the topic link">
+      <a th:href="@{/category/thread(threadId=${thread.id})}" href="/category" title="Click here to continue to the category link">
       <div class="forum_section_desc">
-        <h3 th:text="${thread.topic}"></h3>
-        <p th:text="${thread.topicDescription}"></p>
+        <h3 th:text="${thread.subject}"></h3>
+        <p th:text="${thread.created}"></p>
       </div>
       </a>
       <div class="forum_section_stats">

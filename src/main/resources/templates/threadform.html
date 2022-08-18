@@ -10,13 +10,13 @@
   <script type="text/javascript" th:src="@{/js/alert.js}"></script>
   <!-- This will conditionally include alert.html if notify attribute is included -->
   <div th:replace="${notify} ? ~{fragments/alert.html :: alert} : ~{}"></div>
-  <title>Demo Forums | <th:block th:text="${thread.subject}"></th:block></title>
+  <title>Demo Forums | <th:block th:text="${category.topic}"></th:block></title>
 </head>
   <body>
   <main>
-    <!-- View of a specific thread -->
+    <!-- This is for creating threads -->
     <div th:replace="fragments/header.html :: header"></div>
     <div th:replace="fragments/subheader-profile.html :: subheader-profile"></div>
-    <div th:replace="fragments/threadview.html :: threadview"></div>
+    <div th:replace="fragments/create-thread.html :: create-thread"></div>
   </main>
 </html>
