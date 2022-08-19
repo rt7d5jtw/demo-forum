@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="reply-main" class="content">
+    <header class="forum_header faq_header">
+      <h3>Forums >> Category >> Thread</h3>
+    </header>
+    <!-- Reply form -->
+    <section class="forum_reply_section">
+      <form 
+        class="reply-form" 
+        id="reply-form"
+        th:action="@{/category/thread/reply/{threadId}}" 
+        th:object="${replyDto}"
+        method="post"
+        accept-charset="utf-8"
+        >
+        <div class="reply_inputbox">
+          <label for="">Replying to post</label>
+          <textarea
+            form="reply-form" 
+            name="content" 
+            id="content" 
+            placeholder="Enter text.."
+            th:field="*{content}"
+            rows=10
+            cols=20
+            ></textarea>
+          <div class="btn">
+            <input type="submit" id="submit_reply" name="submit_reply" value="Submit Reply">
+          </div>
+        </div>
+      </form>
+      <div class="forum_postbox">
+        <h4>The post you're replying to:</h4>
+        <p><th:block th:text="${thread.content}"></th:block></p>
+      </div>
+    </section>
+  </div>
+</html>

@@ -14,17 +14,17 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import demo.entities.Post;
+import demo.entities.Reply;
 import demo.entities.Authority;
 
 import java.util.List;
 
 @SuppressWarnings("unchecked")
 @Transactional
-@Repository("postDao")
-public class PostDaoImpl implements PostDao {
+@Repository("replyDao")
+public class ReplyDaoImpl implements ReplyDao {
 
-  private static Logger logger = LoggerFactory.getLogger(PostDaoImpl.class);
+  private static Logger logger = LoggerFactory.getLogger(ReplyDaoImpl.class);
   private SessionFactory sessionFactory;
 
   public SessionFactory getSessionFactory() {
@@ -38,37 +38,37 @@ public class PostDaoImpl implements PostDao {
   }
 
   @Transactional(readOnly = true)
-  public List<Post> findAll() {
+  public List<Reply> findAll() {
     return sessionFactory
       .getCurrentSession()
-      .getNamedQuery("Post.findAll")
+      .getNamedQuery("Reply.findAll")
       .list();
   }
 
   @Transactional(readOnly = true)
-  public Post findById(Integer id) {
-    return (Post) sessionFactory
+  public Reply findById(Integer id) {
+    return (Reply) sessionFactory
       .getCurrentSession()
-      .getNamedQuery("Post.findById")
+      .getNamedQuery("Reply.findById")
       .setParameter("id", id)
       .uniqueResult();
   }
 
   @Transactional
-  public Post save(Post post) {
+  public Reply save(Reply reply) {
     sessionFactory
       .getCurrentSession()
-      .saveOrUpdate(post);
-    logger.info("Post saved with id: " + post.getId());
-    return post;
+      .saveOrUpdate(reply);
+    logger.info("Reply saved with id: " + reply.getId());
+    return reply;
   }
 
   @Transactional
-  public void delete(Post post) {
+  public void delete(Reply reply) {
     sessionFactory
       .getCurrentSession()
-      .delete(post);
-    logger.info("Post deleted with id: " + post.getId());
+      .delete(reply);
+    logger.info("Reply deleted with id: " + reply.getId());
   }
 
 }

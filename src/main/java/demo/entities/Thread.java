@@ -35,6 +35,10 @@ import lombok.Setter;
   @NamedQuery(
     name = "Thread.findById",
     query = "from thread u where u.id = :id"
+  ),
+  @NamedQuery(
+    name = "Thread.findRelated",
+    query = "from thread u where u.category = :category"
   )
 })
 public class Thread extends AbstractEntity {

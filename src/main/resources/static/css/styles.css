@@ -220,6 +220,15 @@ main {
   width: auto;
 }
 
+.forum_category_newthread {
+	border: 2px solid beige;
+	background: beige;
+	padding: 0.15rem 0.45rem;
+	font-size: 1rem;
+	align-self: center;
+	color: black;
+}
+
 /* Button styles for creating a thread */
 .post-thread {
   border: none;
@@ -263,6 +272,7 @@ main {
 
 .forum_thread_section_post_message {
   padding: 0.5rem;
+  flex-grow: 3;
 }
 
 .forum_thread_section_post_status {
@@ -271,7 +281,6 @@ main {
   justify-content: space-between;
   padding: 0.25rem;
 }
-
 .forum_thread_section_author_username {
   width: 100%;
   padding-bottom: 0.75rem;
@@ -279,6 +288,14 @@ main {
 
 .forum_thread_section_author_username p {
   text-align: center;
+}
+
+.forum_thread_section_post_footer {
+	display: flex;
+	border-top: 1px solid #4d4d4db3;
+}
+.forum_thread_section_post_footer form {
+  padding: 0.5rem;
 }
 
 .forum_thread_section_author_other {
@@ -293,6 +310,106 @@ main {
   flex-direction: column;
   padding: 1rem;
 }
-.forum_search > div {
+.forum_search div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
   padding: 1rem;
+}
+
+.forum_search_keywords {
+}
+.forum_search_author {
+}
+.forum_search_category {
+}
+.forum_search_options {
+  border-top: 1px solid antiquewhite;
+}
+
+.forum_search_options legend {
+  padding: 1rem;
+}
+
+.forum_search_options legend,
+.forum_search_options label {
+  font: 1rem 'Fira Sans', sans-serif;
+}
+
+.forum_search_options input {
+  margin: .4rem;
+}
+
+.forum_search_labelwrapper {
+  flex-grow: 1;
+}
+.forum_search_inputwrapper {
+  flex-grow: 1;
+}
+.forum_search_inputwrapper input {
+  width: 85%;
+}
+
+.post-reply {
+	border: none;
+  padding: 0.25rem 1rem;
+	background: beige;
+	color: black;
+	cursor: pointer;
+}
+
+.reply-form {
+	display: flex;
+	flex-grow: 18;
+	border: 2px solid white;
+	justify-content: center;
+}
+
+.reply_inputbox {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid antiquewhite;
+  padding: 1rem;
+  width: 50%;
+}
+
+.forum_reply_section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.forum_postbox {
+	display: flex;
+  flex-direction: column;
+	flex-grow: 4;
+	border: 2px solid red;
+	width: 25%;
+	padding: 1rem;
+	overflow: scroll;
+}
+.forum_postbox h4 {
+  margin-bottom: 0.5rem;
+}
+
+.reply_inputbox label,
+.reply_inputbox textarea,
+.reply_inputbox input {
+  margin-bottom: 0.5rem;
+}
+
+.reply_inputbox textarea {
+  font-size: 1rem;
+}
+
+#submit_reply
+{
+  font-size: 1rem;
+	border: 2px solid red;
+	display: flex;
+	padding: 0.25rem 1.25rem;
+	border: none;
+	color: black;
+	cursor: pointer;
 }

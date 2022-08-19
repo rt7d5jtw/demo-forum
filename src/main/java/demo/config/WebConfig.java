@@ -75,6 +75,8 @@ public class WebConfig implements WebMvcConfigurer {
       .addViewController("/category").setViewName("category");
     registry
       .addViewController("/threadform").setViewName("threadform");
+    registry
+      .addViewController("/reply").setViewName("reply");
   }
 
   @Override

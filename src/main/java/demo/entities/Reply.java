@@ -24,13 +24,15 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class Reply extends AbstractEntity {
 
+  @NonNull
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "thread_id")
+  private Thread thread;
+
+  @NonNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "post_id")
-  private Post post;
 
   @NonNull
   @Column(name = "content", nullable = true, updatable = true)
@@ -50,8 +52,8 @@ public class Reply extends AbstractEntity {
     String newline = System.getProperty("line.separator");
 
     builder.append(this.getClass().getName() + " {" + newline);
+    builder.append(" threadId: " + thread + newline);
     builder.append(" userId: " + user + newline);
-    builder.append(" postId: " + post + newline);
     builder.append(" content: " + content + newline);
     builder.append(" created: " + created + newline);
     builder.append(" updated: " + updated + newline);

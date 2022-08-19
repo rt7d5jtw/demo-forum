@@ -3,7 +3,11 @@
   <div th:fragment="category-main" class="content">
     <header class="forum_header faq_header">
       <h3><th:block th:text="${category.topic}"></th:block></h3>
-      <a th:href="@{/category/create-thread/{id}(id = ${category.id})}" href="/thread">Create a new thread</a>
+      <a 
+        class="forum_category_newthread"
+        th:href="@{/category/create-thread/{id}(id = ${category.id})}" 
+        href="/thread"
+        >Create a new thread</a>
     </header>
     <!-- Threads -->
     <section th:each="thread : ${threads}" class="forum_section">

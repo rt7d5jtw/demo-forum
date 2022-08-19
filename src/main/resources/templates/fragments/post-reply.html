@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <form 
+    th:fragment="post-reply" 
+    th:action="@{/category/thread/reply/{id}(id = ${thread.id})}"
+    method="post">
+    <input 
+      class="post-reply"
+      name="post-reply"
+      id="post-reply" 
+      type="submit" 
+      value="Reply to thread">
+  </form>
+</html>

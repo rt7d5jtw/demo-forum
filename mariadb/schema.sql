@@ -51,25 +51,25 @@ create table threads (
 );
 
 -- Posts are made in threads
-create table posts (
-	id int not null primary key,
-	thread_id int not null,
-	user_id int not null,
-  content text,
-	created date,
-	updated timestamp,
-	constraint fk_post_thread foreign key (thread_id) references threads (id),
-	constraint fk_post_user foreign key (user_id) references users (id)
-);
+-- create table posts (
+-- 	id int not null primary key,
+-- 	thread_id int not null,
+-- 	user_id int not null,
+--   content text,
+-- 	created date,
+-- 	updated timestamp,
+-- 	constraint fk_post_thread foreign key (thread_id) references threads (id),
+-- 	constraint fk_post_user foreign key (user_id) references users (id)
+-- );
 
--- Replies to post in a thread.
+-- Replies to post in a thread or to the thread.
 create table replies (
   id varchar(20) not null primary key,
-  post_id int not null,
+	thread_id int not null,
   user_id int not null,
   content text not null,
 	created date,
 	updated timestamp,
-  constraint fk_reply_post foreign key (post_id) references posts (id),
+  constraint fk_reply_thread foreign key (thread_id) references threads (id),
 	constraint fk_reply_user foreign key (user_id) references users (id)
 );

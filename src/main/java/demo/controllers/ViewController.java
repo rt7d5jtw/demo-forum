@@ -21,13 +21,16 @@ import demo.entities.enums.Role;
 import demo.entities.enums.UserStatus;
 import demo.entities.dtos.RegistrationDto;
 import demo.entities.dtos.ThreadDto;
+import demo.entities.dtos.ReplyDto;
 import demo.entities.User;
 import demo.entities.Category;
 import demo.entities.Authority;
 import demo.entities.Thread;
+import demo.entities.Reply;
 import demo.dao.UserDao;
 import demo.dao.CategoryDao;
 import demo.dao.ThreadDao;
+import demo.dao.ReplyDao;
 import demo.utils.JwtHandler;
 import demo.utils.Timestamper;
 
@@ -52,6 +55,7 @@ public class ViewController {
   private UserDao userDao;
   private CategoryDao categoryDao;
   private ThreadDao threadDao;
+  private ReplyDao replyDao;
   private Timestamper timestamper;
   private JwtHandler jwtHandler;
 
@@ -66,6 +70,7 @@ public class ViewController {
     this.userDao = userDao;
     this.categoryDao = categoryDao;
     this.threadDao = threadDao;
+    this.replyDao = replyDao;
     this.timestamper = timestamper;
     this.jwtHandler = jwtHandler;
   }
@@ -308,7 +313,7 @@ public class ViewController {
   }
 
   @PostMapping(path = "/search")
-  public String searchPage(
+  public String search(
       Model model,
       HttpServletRequest request
       ) {
@@ -327,14 +332,17 @@ public class ViewController {
       HttpServletRequest request,
       HttpServletResponse response
       ) {
-    List<Thread> threads = threadDao.findAll();
-    model.addAttribute("threads", threads);
-
     Category category = categoryDao.findById(id);
     if (category != null) {
       // @TODO: Implement rest of category-main.html page
       // and add rest of the stuff here.
+      //
+      // Search only for category relevant threads!
       model.addAttribute("category", category);
+
+      List<Thread> relatedThreads = threadDao.findRelated(category);
+      model.addAttribute("threads", relatedThreads);
+
       //redirectAttributes.addFlashAttribute("notifyString", "Registration was succesful!");
       return "category";
     }
@@ -406,7 +414,7 @@ public class ViewController {
   @GetMapping(path = "/category/thread")
   public String threadPage(
       @RequestParam(required = true, name = "threadId") Integer id,
-      @ModelAttribute("threadDto") ThreadDto threadDto,
+      @Valid @ModelAttribute("threadDto") ThreadDto threadDto,
       Model model,
       HttpServletRequest request
       ) {
@@ -420,6 +428,50 @@ public class ViewController {
     }
 
     return "redirect:/category";
+  }
+
+  @GetMapping(path = "/category/thread/reply/{threadId}")
+  public String replyPage(
+      @PathVariable(required = true, name = "threadId") Integer threadId,
+      @Valid @ModelAttribute("replyDto") ReplyDto replyDto,
+      Model model,
+      HttpServletRequest request
+      ) {
+    User user = this.authenticate(request, model);
+    Thread forumThread = threadDao.findById(threadId);
+    model.addAttribute("thread", forumThread);
+    return "reply";
+  }
+
+  // e.g. /category/thread/reply/4
+  @PostMapping(path = "/category/thread/reply/{threadId}")
+  public String reply(
+      @PathVariable(required = true, name = "threadId") Integer threadId,
+      @Valid @ModelAttribute("replyDto") ReplyDto replyDto,
+      Model model,
+      HttpServletRequest request,
+      RedirectAttributes redirectAttributes
+      ) {
+    User user = this.authenticate(request, model);
+    Thread forumThread = threadDao.findById(threadId);
+
+    if (forumThread != null && user != null) {
+      replyDao.save(
+          new Reply(
+            forumThread,
+            user,
+            replyDto.getContent(),
+            new Date(System.currentTimeMillis()),
+            new Timestamp(new java.util.Date().getTime())
+          ));
+
+      redirectAttributes.addAttribute("thread", forumThread);
+      //redirectAttributes.addAttribute("user", user);
+      return "redirect:/category/thread";
+    }
+
+    model.addAttribute("thread", forumThread);
+    return "/category/thread";
   }
 
   /** 

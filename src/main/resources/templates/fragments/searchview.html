@@ -7,22 +7,49 @@
     <!-- Search -->
     <section class="forum_search">
       <div class="forum_search_keywords">
-        <div>
+        <div class="forum_search_labelwrapper">
           <label for="search">Search by keywords:</label>
+        </div>
+        <div class="forum_search_inputwrapper">
           <input type="text" id="search" name="search">
         </div>
       </div>
       <div class="forum_search_author">
-        <label for="search">Search by author:</label>
-        <input type="text" id="search_by_author" name="search_by_author">
+        <div class="forum_search_labelwrapper">
+          <label for="search">Search by author:</label>
+        </div>
+        <div class="forum_search_inputwrapper">
+          <input type="text" id="search_by_author" name="search_by_author">
+        </div>
       </div>
       <div class="forum_search_category">
-        <label for="search">Search by category:</label>
-        <input type="text" id="search_by_category" name="search_by_category">
+        <div class="forum_search_labelwrapper">
+          <label for="search">Search by category:</label>
+        </div>
+        <div class="forum_search_inputwrapper">
+          <input type="text" id="search_by_category" name="search_by_category">
+        </div>
       </div>
       <div class="forum_search_options">
-        <label for="search">Search options:</label>
-        <input type="radio" class="radio" value="0">
+        <fieldset>
+          <legend>Select search options:</legend>
+          <div>
+            <select name="searchopts" id="search-options">
+              <option value="">-- Search options --</option>
+              <option value="time">Post time</option>
+              <option value="author">Author</option>
+              <option value="forum">Forum</option>
+            </select>
+          </div>
+          <div>
+            <input type="radio" id="huey" name="drone" value="huey" checked />
+            <label for="huey">Ascending</label>
+          </div>
+          <div>
+            <input type="radio" id="dewey" name="drone" value="dewey" />
+            <label for="dewey">Descending</label>
+          </div>
+        </fieldset>
       </div>
     </section>
   </div>
