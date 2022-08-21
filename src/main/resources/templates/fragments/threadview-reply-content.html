@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <th:block th:fragment="threadview-reply-content">
+    <div
+      class="forum_thread_section_post_status" 
+      >
+      <p>Post subject: <th:block th:text="${thread.subject}"></th:block></p>
+      <p>Posted: <th:block th:text="${reply.created}"></th:block></p>
+    </div>
+    <div 
+      class="forum_thread_section_post_message">
+      <p><th:block th:text="${reply.content}"></th:block></p>
+    </div>
+      <div
+        class="forum_thread_section_post_footer" 
+        >
+        <a 
+          class="forum_category_newthread"
+          th:href="@{/category/thread/reply/{id}(id = ${thread.id})}" 
+          href="/category/thread/reply/"
+          >Reply to post</a>
+      </div>
+    </div>
+  </th:block>
+</html>

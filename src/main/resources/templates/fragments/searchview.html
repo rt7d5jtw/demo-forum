@@ -6,51 +6,75 @@
     </header>
     <!-- Search -->
     <section class="forum_search">
-      <div class="forum_search_keywords">
-        <div class="forum_search_labelwrapper">
-          <label for="search">Search by keywords:</label>
+      <form 
+        class="signup" 
+        th:action="@{/search}" 
+        th:object="${searchDto}"
+        method="get"
+        accept-charset="utf-8"
+        >
+        <div class="forum_search_keywords">
+          <div class="forum_search_labelwrapper">
+            <label for="search">Search by keywords:</label>
+          </div>
+          <div class="forum_search_inputwrapper">
+            <input 
+              type="text" 
+              id="keywords" 
+              name="keywords"
+              >
+          </div>
         </div>
-        <div class="forum_search_inputwrapper">
-          <input type="text" id="search" name="search">
+        <div class="forum_search_author">
+          <div class="forum_search_labelwrapper">
+            <label for="search">Search for author:</label>
+          </div>
+          <div class="forum_search_inputwrapper">
+            <input 
+              type="text" 
+              id="author" 
+              name="author"
+              >
+          </div>
         </div>
-      </div>
-      <div class="forum_search_author">
-        <div class="forum_search_labelwrapper">
-          <label for="search">Search by author:</label>
-        </div>
-        <div class="forum_search_inputwrapper">
-          <input type="text" id="search_by_author" name="search_by_author">
-        </div>
-      </div>
-      <div class="forum_search_category">
-        <div class="forum_search_labelwrapper">
-          <label for="search">Search by category:</label>
-        </div>
-        <div class="forum_search_inputwrapper">
-          <input type="text" id="search_by_category" name="search_by_category">
-        </div>
-      </div>
-      <div class="forum_search_options">
-        <fieldset>
-          <legend>Select search options:</legend>
-          <div>
-            <select name="searchopts" id="search-options">
-              <option value="">-- Search options --</option>
-              <option value="time">Post time</option>
-              <option value="author">Author</option>
-              <option value="forum">Forum</option>
+        <div class="forum_search_category">
+          <div class="forum_search_labelwrapper">
+            <label for="search">Search by specific category:</label>
+          </div>
+          <div class="forum_search_inputwrapper">
+            <select name="search_category" id="search_category">
+              <option value="">-- Categories --</option>
+              <option value="time">Forums</option>
+              <option value="author">Offtopic</option>
+              <option value="forum">Archive</option>
             </select>
           </div>
-          <div>
-            <input type="radio" id="huey" name="drone" value="huey" checked />
-            <label for="huey">Ascending</label>
-          </div>
-          <div>
-            <input type="radio" id="dewey" name="drone" value="dewey" />
-            <label for="dewey">Descending</label>
-          </div>
-        </fieldset>
-      </div>
+        </div>
+        <div class="forum_search_options">
+          <fieldset>
+            <legend>Select search options:</legend>
+            <div>
+              <select name="searchopts" id="search-options">
+                <option value="">-- Search options --</option>
+                <option value="time">Post time</option>
+                <option value="author">Author</option>
+                <option value="forum">Forum</option>
+              </select>
+            </div>
+            <div>
+              <input type="radio" id="huey" name="drone" value="huey" checked />
+              <label for="huey">Ascending</label>
+            </div>
+            <div>
+              <input type="radio" id="dewey" name="drone" value="dewey" />
+              <label for="dewey">Descending</label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="search_btn">
+          <input type="submit" name="submit_search" value="Search">
+        </div>
+      </form>
     </section>
   </div>
 </html>

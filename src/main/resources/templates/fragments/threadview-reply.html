@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <th:block th:fragment="threadview-reply">
+    <!-- Author of the post -->
+    <div th:replace="fragments/threadview-reply-profile.html :: threadview-reply-profile"></div>
+    <div class="forum_thread_section_post">
+    <!-- Content of the post -->
+    <div th:replace="fragments/threadview-reply-content.html :: threadview-reply-content"></div>
+  </th:block>
+</html>

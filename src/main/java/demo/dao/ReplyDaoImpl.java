@@ -3,6 +3,7 @@ package demo.dao;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.Hibernate;
 import org.hibernate.exception.GenericJDBCException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import demo.entities.Reply;
+import demo.entities.Thread;
 import demo.entities.Authority;
 
 import java.util.List;
@@ -52,6 +54,34 @@ public class ReplyDaoImpl implements ReplyDao {
       .getNamedQuery("Reply.findById")
       .setParameter("id", id)
       .uniqueResult();
+  }
+
+  /** 
+   * Eagerly fetches only the replies relevant 
+   * to a specific thread by threadId. 
+   * */
+  @Transactional(readOnly = true)
+  public List<Reply> findRelated(Thread thread) {
+    try (Session session = sessionFactory.openSession()) {
+      List<Reply> replylist = (List<Reply>) session
+        .getNamedQuery("Reply.findRelated")
+        .setParameter("thread", thread)
+        .list();
+
+      Hibernate.initialize(replylist);
+      Hibernate.isInitialized(replylist);
+      for (Reply reply : replylist) {
+        Hibernate.initialize(reply);
+        Hibernate.isInitialized(reply);
+        Hibernate.isInitialized(reply.getUser());
+        Hibernate.initialize(reply.getUser());
+        Hibernate.isInitialized(reply.getThread());
+        Hibernate.initialize(reply.getThread());
+      }
+
+      session.close();
+      return replylist;
+    }
   }
 
   @Transactional

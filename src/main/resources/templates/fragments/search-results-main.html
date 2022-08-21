@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <div th:fragment="search-results-main" class="content">
+    <header class="forum_header faq_header">
+      <h3>Search results</h3>
+    </header>
+    <!-- Threads -->
+    <section th:each="thread : ${results}" class="forum_section">
+      <a th:href="@{/category/thread(threadId=${thread.id})}" href="/category" title="Click here to continue to the category link">
+      <div class="forum_section_desc">
+        <h3 th:text="${thread.subject}"></h3>
+        <p th:text="${thread.created}"></p>
+      </div>
+      </a>
+      <div class="forum_section_stats">
+        <p>Replies: <!-- <th:block th:text="${thread.amountThreads}"></th:block> --></p>
+        <p>Author: <!--<th:block th:text="${thread.amountPosts}"></th:block>--></p>
+        <p>Views: <!--<th:block th:text="${thread.amountPosts}"></th:block>--></p>
+      </div>
+      <div class="forum_section_lastpost">
+        <p>Last post: <!--<th:block th:text="${thread.lastPost}"></th:block>--></p>
+      </div>
+    </section>
+  </div>
+</html>

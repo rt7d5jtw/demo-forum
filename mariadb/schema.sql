@@ -9,6 +9,7 @@ create table users (
 	created date,
 	updated timestamp,
 	lastloggedin timestamp,
+	posts_amount int,
 	version int default 0,
 	unique (email),
 	unique (username)
@@ -49,18 +50,6 @@ create table threads (
   constraint fk_thread_category foreign key (category_id) references categories (id),
   constraint fk_thread_user foreign key (user_id) references users (id)
 );
-
--- Posts are made in threads
--- create table posts (
--- 	id int not null primary key,
--- 	thread_id int not null,
--- 	user_id int not null,
---   content text,
--- 	created date,
--- 	updated timestamp,
--- 	constraint fk_post_thread foreign key (thread_id) references threads (id),
--- 	constraint fk_post_user foreign key (user_id) references users (id)
--- );
 
 -- Replies to post in a thread or to the thread.
 create table replies (

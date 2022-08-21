@@ -70,12 +70,11 @@ public class ThreadDaoImpl implements ThreadDao {
         Hibernate.isInitialized(forumThread.getCategory());
         Hibernate.initialize(forumThread.getCategory());
       }
+
       session.close();
       return threadlist;
     }
   }
-
-
 
   @Transactional(readOnly = true)
   public Thread findById(Integer id) {
@@ -102,6 +101,34 @@ public class ThreadDaoImpl implements ThreadDao {
 
       session.close();
       return forumThread;
+    }
+  }
+
+  /** 
+   * Eagerly fetches only the threads relevant 
+   * to the specific keywords in subject and possible author and/or category. 
+   * */
+  @Transactional(readOnly = true)
+  public List<Thread> forumThreadSearch(String keywords) {
+    try (Session session = sessionFactory.openSession()) {
+      List<Thread> threadlist = (List<Thread>) session
+        .getNamedQuery("Thread.findByKeywords")
+        .setParameter("keywords", keywords)
+        .list();
+
+      Hibernate.initialize(threadlist);
+      Hibernate.isInitialized(threadlist);
+      for (Thread forumThread : threadlist) {
+        Hibernate.initialize(forumThread);
+        Hibernate.isInitialized(forumThread);
+        Hibernate.isInitialized(forumThread.getUser());
+        Hibernate.initialize(forumThread.getUser());
+        Hibernate.isInitialized(forumThread.getCategory());
+        Hibernate.initialize(forumThread.getCategory());
+      }
+
+      session.close();
+      return threadlist;
     }
   }
 

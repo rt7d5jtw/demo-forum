@@ -3,6 +3,9 @@ package demo.entities;
 import java.sql.Timestamp;
 import java.sql.Date;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +25,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@NamedQueries({
+  @NamedQuery(
+    name = "Reply.findAll", 
+    query = "from reply"
+  ),
+  @NamedQuery(
+    name = "Reply.findById",
+    query = "from reply u where u.id = :id"
+  ),
+  @NamedQuery(
+    name = "Reply.findRelated",
+    query = "from reply u where u.thread = :thread"
+  )
+})
 public class Reply extends AbstractEntity {
 
   @NonNull

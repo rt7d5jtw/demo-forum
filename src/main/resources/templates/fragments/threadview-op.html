@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <th:block th:fragment="threadview-op">
+    <div class="forum_thread_section_author">
+      <div class="forum_thread_section_author_username">
+        <p th:text="${user.username}"></p>
+      </div>
+      <div class="forum_thread_section_author_other" >
+        <img 
+          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
+          alt="Profile picture">
+        <p>Joined: <th:block th:text="${user.created}"></th:block></p>
+        <p>Posts: <th:block th:text="${user.postsAmount}"></th:block></p>
+      </div>
+    </div>
+    <div class="forum_thread_section_post">
+      <div
+        class="forum_thread_section_post_status" 
+        >
+        <p>Post subject: <th:block th:text="${thread.subject}"></th:block></p>
+        <p>Posted: <th:block th:text="${thread.created}"></th:block></p>
+      </div>
+      <div 
+        class="forum_thread_section_post_message">
+        <p><th:block th:text="${thread.content}"></th:block></p>
+      </div>
+      <div
+        class="forum_thread_section_post_footer" 
+        >
+        <a 
+          class="forum_category_newthread"
+          th:href="@{/category/thread/reply/{id}(id = ${thread.id})}" 
+          href="/category/thread/reply/"
+          >Reply to thread</a>
+      </div>
+    </div>
+  </th:block>
+</html>

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.http.CacheControl;
 
 import demo.entities.dtos.UserDto;
+import demo.entities.dtos.SearchDto;
 import demo.entities.enums.Role;
 import demo.entities.enums.UserStatus;
 import demo.entities.dtos.RegistrationDto;
@@ -40,6 +41,7 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +66,7 @@ public class ViewController {
       UserDao userDao,
       CategoryDao categoryDao,
       ThreadDao threadDao,
+      ReplyDao replyDao,
       Timestamper timestamper,
       JwtHandler jwtHandler
       ) {
@@ -303,21 +306,50 @@ public class ViewController {
     return "redirect:/";
   }
 
+  // @TODO: FIX THIS 
   @GetMapping(path = "/search")
   public String searchPage(
+      @Valid @ModelAttribute("searchDto") SearchDto searchDto,
+      @RequestParam(required = false, name = "keywords") String keywords,
+      @RequestParam(required = false, name = "author") String author,
+      @RequestParam(required = false, name = "category") String category,
       Model model,
-      HttpServletRequest request
+      RedirectAttributes redirectAttributes,
+      HttpServletRequest request,
+      HttpServletResponse response
       ) {
     User user = this.authenticate(request, model);
-    return "search";
-  }
+    model.addAttribute("params", false);
 
-  @PostMapping(path = "/search")
-  public String search(
-      Model model,
-      HttpServletRequest request
-      ) {
-    User user = this.authenticate(request, model);
+    var dtoKeywords = searchDto.getKeywords();
+    var dtoAuthor = searchDto.getAuthor();
+    var dtoCategory = searchDto.getCategory();
+
+    System.out.println("Keywords: " + keywords);
+
+    Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+    if (inputFlashMap != null)
+      System.out.println(inputFlashMap.get("results"));
+
+    if (keywords != null) {
+      // Perform some kind of sanetizing for getting rid of 
+      // possible spaces and SQL injection attempts.
+      //if (author != null)
+
+      //if (category != null)
+
+      List<Thread> searchResults = threadDao.forumThreadSearch("%" + keywords + "%");
+      System.out.println(searchResults);
+
+      redirectAttributes.addFlashAttribute("results", searchResults);
+      redirectAttributes.addFlashAttribute("params", true);
+
+      //redirectAttributes.addAttribute("results", searchResults);
+      redirectAttributes.addAttribute("keywords", keywords);
+
+      return "redirect:/search";
+    }
+
     return "search";
   }
 
@@ -372,8 +404,7 @@ public class ViewController {
   @PostMapping(path = "/category/create-thread/{categoryId}")
   public String threadForm(
       @PathVariable(required = true, name = "categoryId") Integer categoryId,
-      @Valid
-      @ModelAttribute("threadDto") ThreadDto threadDto,
+      @Valid @ModelAttribute("threadDto") ThreadDto threadDto,
       RedirectAttributes redirectAttributes,
       HttpServletRequest request,
       HttpServletResponse response,
@@ -421,9 +452,12 @@ public class ViewController {
 
     Thread forumThread = threadDao.eagerFindById(id);
     User user = forumThread.getUser();
-    if (forumThread != null && user != null) {
+    List<Reply> replies = replyDao.findRelated(forumThread);
+
+    if (forumThread != null && user != null && replies != null) {
       model.addAttribute("thread", forumThread);
       model.addAttribute("user", user);
+      model.addAttribute("replies", replies);
       return "thread";
     }
 
@@ -437,10 +471,18 @@ public class ViewController {
       Model model,
       HttpServletRequest request
       ) {
+    // Authenticate
     User user = this.authenticate(request, model);
-    Thread forumThread = threadDao.findById(threadId);
-    model.addAttribute("thread", forumThread);
-    return "reply";
+    Thread forumThread = threadDao.eagerFindById(threadId);
+    User forumUser = forumThread.getUser();
+
+    if (forumThread != null && forumUser != null) {
+      model.addAttribute("thread", forumThread);
+      model.addAttribute("user", forumUser);
+      return "reply";
+    }
+
+    return "redirect:/";
   }
 
   // e.g. /category/thread/reply/4
@@ -453,7 +495,7 @@ public class ViewController {
       RedirectAttributes redirectAttributes
       ) {
     User user = this.authenticate(request, model);
-    Thread forumThread = threadDao.findById(threadId);
+    Thread forumThread = threadDao.eagerFindById(threadId);
 
     if (forumThread != null && user != null) {
       replyDao.save(
@@ -465,13 +507,12 @@ public class ViewController {
             new Timestamp(new java.util.Date().getTime())
           ));
 
-      redirectAttributes.addAttribute("thread", forumThread);
-      //redirectAttributes.addAttribute("user", user);
+      redirectAttributes.addAttribute("threadId", forumThread.getId());
       return "redirect:/category/thread";
     }
 
     model.addAttribute("thread", forumThread);
-    return "/category/thread";
+    return "thread";
   }
 
   /** 

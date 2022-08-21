@@ -8,6 +8,7 @@ import demo.entities.Category;
 public interface ThreadDao {
   List<Thread> findAll();
   List<Thread> findRelated(Category category);
+  List<Thread> forumThreadSearch(String keywords);
   Thread findById(Integer id);
   Thread eagerFindById(Integer id);
   Thread save(Thread thread);

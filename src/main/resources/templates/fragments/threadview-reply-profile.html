@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <th:block th:fragment="threadview-reply-profile">
+    <div class="forum_thread_section_author">
+      <div class="forum_thread_section_author_username">
+        <p th:text="${reply.user.username}"></p>
+      </div>
+      <div class="forum_thread_section_author_other" >
+        <img 
+          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
+          alt="Profile picture">
+        <p>Joined: <th:block th:text="${reply.user.created}"></th:block></p>
+        <p>Posts: <th:block th:text="${reply.user.postsAmount}"></th:block></p>
+      </div>
+    </div>
+  </th:block>
+</html>

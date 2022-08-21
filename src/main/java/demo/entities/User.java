@@ -95,6 +95,9 @@ public class User extends AbstractEntity {
   @Column(name = "lastloggedin", nullable = true, updatable = true)
   private Timestamp lastloggedin;
 
+  @Column(name = "posts_amount", nullable = true, updatable = true)
+  private Integer postsAmount;
+
   @Column(name = "version", nullable = true, updatable = true)
   private int version; // 0 by default
 
@@ -110,6 +113,7 @@ public class User extends AbstractEntity {
     builder.append(" userstatus: " + userstatus + newline);
     builder.append(" created: " + created + newline);
     builder.append(" updated: " + updated + newline);
+    builder.append(" postsAmount: " + postsAmount + newline);
     builder.append(" lastloggedin: " + lastloggedin + newline);
     builder.append(" version: " + version + newline);
     builder.append("}");

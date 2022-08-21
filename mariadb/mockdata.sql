@@ -1,39 +1,66 @@
 -- Initial categories for the forums
 INSERT INTO 
   categories (
-    id, topic, 
-    topic_description, amount_threads, 
-    amount_posts, last_post, 
-    created, updated
+    id, 
+    topic, 
+    topic_description, 
+    amount_threads, 
+    amount_posts, 
+    last_post, 
+    created, 
+    updated
   ) VALUES (
-  0, 'Forum discussion', 
-  'Discussions regarding the forums and support.', 0,
-  0, NULL,
-  current_timestamp(), '0000-00-00 00:00:00');
+  0, 
+  'Forum discussion', 
+  'Discussions regarding the forums and support.', 
+  2,
+  2,
+  NULL,
+  current_timestamp(), 
+  '0000-00-00 00:00:00'
+);
 
 INSERT INTO 
   categories (
-    id, topic, 
-    topic_description, amount_threads, 
-    amount_posts, last_post, 
-    created, updated
+    id,
+    topic, 
+    topic_description, 
+    amount_threads, 
+    amount_posts, 
+    last_post, 
+    created,
+    updated
   ) VALUES (
-  1, 'Off Topic', 
-  'Discussions for your non forum-related discussions.', 0,
-  0, NULL,
-  current_timestamp(), '0000-00-00 00:00:00');
+  1, 
+  'Off Topic', 
+  'Discussions for your non forum-related discussions.', 
+  1,
+  1,
+  NULL,
+  current_timestamp(), 
+  '0000-00-00 00:00:00'
+);
 
 INSERT INTO 
   categories (
-    id, topic, 
-    topic_description, amount_threads, 
-    amount_posts, last_post, 
-    created, updated
+    id,
+    topic, 
+    topic_description, 
+    amount_threads, 
+    amount_posts, 
+    last_post, 
+    created,
+    updated
   ) VALUES (
-  2, 'Archive', 
-  'Old topics which are not needed anymore.', 0,
-  0, NULL,
-  current_timestamp(), '0000-00-00 00:00:00');
+  2,
+  'Archive', 
+  'Old topics which are not needed anymore.',
+  2,
+  2,
+  NULL,
+  current_timestamp(), 
+  '0000-00-00 00:00:00'
+);
 
 -- Test user with authorities --
 INSERT INTO 
@@ -46,6 +73,7 @@ INSERT INTO
     user_status, 
     created, 
     updated, 
+    posts_amount, 
     lastloggedin, 
     version
   ) VALUES (
@@ -57,6 +85,7 @@ INSERT INTO
   'ACTIVE', 
   '2022-08-19', 
   current_timestamp(), 
+  237,
   '2022-08-19 13:58:17.000',
   0
 );

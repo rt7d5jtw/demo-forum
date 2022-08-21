@@ -9,7 +9,7 @@
       <form 
         class="reply-form" 
         id="reply-form"
-        th:action="@{/category/thread/reply/{threadId}}" 
+        th:action="@{/category/thread/reply/{id}(id = ${thread.id})}" 
         th:object="${replyDto}"
         method="post"
         accept-charset="utf-8"
@@ -30,9 +30,11 @@
           </div>
         </div>
       </form>
-      <div class="forum_postbox">
-        <h4>The post you're replying to:</h4>
-        <p><th:block th:text="${thread.content}"></th:block></p>
+      <div class="forum_postbox_wrapper">
+        <div class="forum_postbox">
+          <h4>The post you're replying to:</h4>
+          <p><th:block th:text="${thread.content}"></th:block></p>
+        </div>
       </div>
     </section>
   </div>
