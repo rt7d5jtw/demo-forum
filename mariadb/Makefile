@@ -27,6 +27,10 @@ mockdata:
 	docker cp mockdata.sql $(MARIADB_ID):/
 	docker exec -t $(MARIADB_ID) mysql -u testuser -pmeow -e "use forum; source mockdata.sql;"
 
+ssl:
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/private-key.key -out ssl/cert.crt
+	openssl dhparam -out ssl/dhparam.pem 2048
+
 # For inspecting the tables
 show-schema:
 	docker exec -t $(MARIADB_ID) mysql -u testuser -pmeow -e "use forum; show columns from users;"
@@ -44,4 +48,4 @@ clean:
 	sleep 5
 	docker rm $(MARIADB_ID)
 
-.PHONY: clean desc show-schema init logs local volume network all mockdata
+.PHONY: clean desc show-schema init logs local volume network all mockdata ssl

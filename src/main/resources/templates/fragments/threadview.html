@@ -3,11 +3,14 @@
   <div th:fragment="threadview" class="content">
     <header class="forum_header faq_header">
       <h3><th:block th:text="${thread.subject}"></th:block></h3>
-      <a 
-        class="forum_category_newthread"
-        th:href="@{/category/thread/reply/{id}(id = ${thread.id})}" 
-        href="/category/thread/reply/"
-        >Reply to thread</a>
+      <!-- Only shows up to authenticated users -->
+      <th:block th:if="${authenticated}">
+        <a 
+          class="forum_category_newthread"
+          th:href="@{/category/thread/reply/{id}(id = ${thread.id})}" 
+          href="/category/thread/reply/"
+          >Reply to thread</a>
+      </th:block>
     </header>
     <!-- Thread Original Poster -->
     <section class="forum_thread_section_op">

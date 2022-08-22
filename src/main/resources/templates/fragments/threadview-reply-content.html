@@ -14,11 +14,14 @@
       <div
         class="forum_thread_section_post_footer" 
         >
-        <a 
-          class="forum_category_newthread"
-          th:href="@{/category/thread/reply/{id}(id = ${thread.id})}" 
-          href="/category/thread/reply/"
-          >Reply to post</a>
+        <!-- Only shows up to authenticated users -->
+        <th:block th:if="${authenticated}">
+          <a 
+            class="forum_category_newthread"
+            th:href="@{/category/thread/reply/{id}(id = ${thread.id})}" 
+            href="/category/thread/reply/"
+            >Reply to post</a>
+        </th:block>
       </div>
     </div>
   </th:block>

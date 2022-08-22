@@ -85,17 +85,11 @@ public class ViewController {
       HttpServletRequest request,
       HttpServletResponse response
       ) {
-    System.out.println("auth header: ");
-    System.out.println(request.getHeader("Authorization"));
-
-    // Get all categories for the homepage.
     // @TODO: Cache this
     List<Category> categories = categoryDao.findAll();
     model.addAttribute("categories", categories);
 
-    System.out.println("cookies: ");
     Cookie[] cookies = request.getCookies();
-    System.out.println(cookies);
     Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 
     if (cookies != null) {
@@ -107,10 +101,6 @@ public class ViewController {
 
           if (result != null) {
             if (email.equals(result.getEmail())) {
-              System.out.println("You are authenticated!");
-              System.out.println(request.getQueryString());
-              System.out.println(redirectAttributes.getFlashAttributes());
-
               // "notifyString" key contains alert message for alert.js
               if (inputFlashMap != null && inputFlashMap.get("notifyString") != null) {
                 model.addAttribute("notify", true);
@@ -160,7 +150,6 @@ public class ViewController {
       RedirectAttributes redirectAttributes,
       HttpServletResponse response
       ) {
-    System.out.println("Input from the form -> " + userDto.toString());
     // 1. Verify the password hash against the plain password
     // 2. If password is correct, route user homepage and include jwt
     // 3. Store jwt in a cookie with XSS and CSRF protection (with short lifespan)
@@ -174,8 +163,6 @@ public class ViewController {
       // Update last logged in.
       userDao.updateLastLoggedIn(userDto.getEmail());
       Authority userAuthorities = userDao.findUserAuthorities(userDto.getEmail());
-      System.out.println(userAuthorities);
-      System.out.println(foundUser.getLastloggedin());
 
       String token = jwtHandler.createToken(
           Map.of(
@@ -187,7 +174,6 @@ public class ViewController {
               ),
           LocalDateTime.now().plusMinutes(20)
           );
-      System.out.println("Token -> " + token);
 
       // Store JWT access token to http only cookies
       var cookie = new Cookie(
@@ -229,13 +215,6 @@ public class ViewController {
       Model model, Errors errors,
       RedirectAttributes redirectAttributes
       ) {
-
-    System.out.println(
-        "Input from a form received for registration :: "
-        + timestamper.timestamp()
-        + " ->" + registrationDto.toString()
-        );
-
     // Check that "repeat password" input matches first "password" input.
     if (!registrationDto.getPassword().equals(registrationDto.getPassword_verify())) {
       model.addAttribute("verifyPasswordError", "Passwords did not match each other!");
@@ -298,8 +277,9 @@ public class ViewController {
       RedirectAttributes redirectAttributes,
       HttpServletRequest request
       ) {
-
+    // Authenticate
     User user = this.authenticate(request, model);
+
     if (user != null) {
       model.addAttribute("user", user);
       return "profile";
@@ -320,18 +300,14 @@ public class ViewController {
       HttpServletRequest request,
       HttpServletResponse response
       ) {
+    // Authenticate
     User user = this.authenticate(request, model);
     model.addAttribute("params", false);
+    Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 
     var dtoKeywords = searchDto.getKeywords();
     var dtoAuthor = searchDto.getAuthor();
     var dtoCategory = searchDto.getCategory();
-
-    System.out.println("Keywords: " + keywords);
-
-    Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
-    if (inputFlashMap != null)
-      System.out.println(inputFlashMap.get("results"));
 
     if (keywords != null) {
 
@@ -342,7 +318,6 @@ public class ViewController {
       //if (category != null)
 
       List<Thread> searchResults = threadDao.forumThreadSearch("%" + keywords + "%");
-      System.out.println(searchResults);
 
       model.addAttribute("results", searchResults);
       model.addAttribute("keywords", keywords);
@@ -364,6 +339,9 @@ public class ViewController {
       HttpServletRequest request,
       HttpServletResponse response
       ) {
+    // Authenticate
+    User user = this.authenticate(request, model);
+
     Category category = categoryDao.findById(id);
     if (category != null) {
       // @TODO: Implement rest of category-main.html page
@@ -374,8 +352,6 @@ public class ViewController {
 
       List<Thread> relatedThreads = threadDao.findRelated(category);
       model.addAttribute("threads", relatedThreads);
-
-      //redirectAttributes.addFlashAttribute("notifyString", "Registration was succesful!");
       return "category";
     }
 
@@ -390,7 +366,9 @@ public class ViewController {
       HttpServletRequest request
       ) {
 
+    // Authenticate
     User user = this.authenticate(request, model);
+
     Category category = categoryDao.findById(categoryId);
     if (category != null && user != null) {
       model.addAttribute("category", category);
@@ -411,13 +389,8 @@ public class ViewController {
       Model model
       ) {
     Category category = categoryDao.findById(categoryId);
-    System.out.println("-------------- ThreadDto --------------");
-    System.out.println(threadDto.toString());
     User user = this.authenticate(request, model);
-    if (user != null) {
-      System.out.println("-------------- User --------------");
-      System.out.println(user);
-    }
+
     if (category != null) {
       model.addAttribute("category", category);
       //User user = userDao.findById(threadDto.getUserId());
@@ -460,6 +433,8 @@ public class ViewController {
       Model model,
       HttpServletRequest request
       ) {
+    // Authenticate
+    this.authenticate(request, model);
 
     Thread forumThread = threadDao.eagerFindById(id);
     User user = forumThread.getUser();
