@@ -14,10 +14,14 @@ $ gradle build run
 
 *NOTE: Make sure you have MariaDB up!*
 
-`$ make init`
+```
+$ make init
+```
 
 ## To generate the mockdata for MariaDB
 
 *NOTE: Make sure you have MariaDB up!*
 
-`$ make mockdata`
+```
+$ make mockdata`
+```
