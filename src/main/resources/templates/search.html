@@ -18,10 +18,7 @@
     <div th:replace="fragments/header.html :: header"></div>
     <div th:replace="fragments/subheader-profile.html :: subheader-profile"></div>
     <!-- Search Form -->
-    <th:block th:if="${not params}">
-      <!-- not params evaluates "params" attribute, if false, shows search form -->
-      <div th:replace="fragments/searchview.html :: searchview"></div>
-    </th:block>
+    <div th:replace="fragments/searchview.html :: searchview"></div>
     <!-- @TODO: FIX THIS -->
     <th:block th:if="${params}">
       <div th:replace="fragments/search-results-main.html :: search-results-main"></div>

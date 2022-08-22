@@ -136,6 +136,8 @@ public class ViewController {
     // @TODO: Cache categories | HTTP CACHE
     // IMPLEMENTATION
 
+    replyDao.findLatest(threadDao.findById(3));
+
     return "index";
   }
 
@@ -332,6 +334,7 @@ public class ViewController {
       System.out.println(inputFlashMap.get("results"));
 
     if (keywords != null) {
+
       // Perform some kind of sanetizing for getting rid of 
       // possible spaces and SQL injection attempts.
       //if (author != null)
@@ -341,13 +344,10 @@ public class ViewController {
       List<Thread> searchResults = threadDao.forumThreadSearch("%" + keywords + "%");
       System.out.println(searchResults);
 
-      redirectAttributes.addFlashAttribute("results", searchResults);
-      redirectAttributes.addFlashAttribute("params", true);
+      model.addAttribute("results", searchResults);
+      model.addAttribute("keywords", keywords);
 
-      //redirectAttributes.addAttribute("results", searchResults);
-      redirectAttributes.addAttribute("keywords", keywords);
-
-      return "redirect:/search";
+      return "search-results";
     }
 
     return "search";
@@ -422,12 +422,23 @@ public class ViewController {
       model.addAttribute("category", category);
       //User user = userDao.findById(threadDto.getUserId());
       if (category != null && user != null) {
+
+        String contentString = threadDto.getContent();
+
+        // Sanitize from ASCII characters that cause trouble for the database.
+        if (contentString.contains("`") || contentString.contains("´")) {
+          // Converts ` into a '
+          contentString.replace("`", "'");
+          contentString.replace("´", "'");
+        }
+
         threadDao.save(
             new Thread(
               category,
               user,
               threadDto.getSubject(),
-              threadDto.getContent(),
+              contentString,
+              0,
               new Date(System.currentTimeMillis()),
               new Timestamp(new java.util.Date().getTime())
             ));

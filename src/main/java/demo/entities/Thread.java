@@ -66,6 +66,10 @@ public class Thread extends AbstractEntity {
   private String content;
 
   @NonNull
+  @Column(name = "amount_posts", nullable = false, updatable = true)
+  private Integer amountPosts;
+
+  @NonNull
   @Column(name = "created", nullable = false, updatable = false)
   private Date created;
 
@@ -83,6 +87,7 @@ public class Thread extends AbstractEntity {
     builder.append(" userId: " + user + newline);
     builder.append(" subject: " + subject + newline);
     builder.append(" content: " + content + newline);
+    builder.append(" amountPosts: " + amountPosts + newline);
     builder.append(" created: " + created + newline);
     builder.append(" updated: " + updated + newline);
     builder.append("}");

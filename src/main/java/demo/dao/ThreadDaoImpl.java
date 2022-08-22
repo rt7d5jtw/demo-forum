@@ -19,6 +19,12 @@ import java.util.Date;
 import demo.entities.Thread;
 import demo.entities.Authority;
 import demo.entities.Category;
+import demo.entities.Reply;
+
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import java.util.List;
 
@@ -129,6 +135,36 @@ public class ThreadDaoImpl implements ThreadDao {
 
       session.close();
       return threadlist;
+    }
+  }
+
+  /** 
+   * Finds most recently created reply in a thread of a specific category.
+   * */
+  @Transactional(readOnly = true)
+  public Reply findLatest(Category category) {
+    try (Session session = sessionFactory.openSession()) {
+      CriteriaBuilder builder = (CriteriaBuilder) 
+        session.getCriteriaBuilder();
+
+      CriteriaQuery<Thread> query = builder.createQuery(Thread.class);
+      Root<Thread> root = query.from(Thread.class);
+      query.select(root);
+
+      // Get only the threads from this specfic category
+      query.where(builder.equal(root.get("category"), category.getId()));
+
+      Query<Thread> sessionQuery = session.createQuery(query);
+      List<Thread> results = sessionQuery.getResultList();
+
+      for (var result : results) {
+        System.out.println("\n");
+        System.out.println("Result -> " + result.getContent());
+        System.out.println("\n");
+      }
+
+      session.close();
+      return new Reply();
     }
   }
 

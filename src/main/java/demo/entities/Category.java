@@ -56,10 +56,6 @@ public class Category extends AbstractEntity {
   private Integer amountPosts;
 
   @NonNull
-  @Column(name = "last_post", length = 100, nullable = true, updatable = true)
-  private String lastPost;
-
-  @NonNull
   @Column(name = "created", nullable = false, updatable = false)
   private Date created;
 
@@ -77,7 +73,6 @@ public class Category extends AbstractEntity {
     builder.append(" topicDescription: " + topicDescription + newline);
     builder.append(" amountThreads: " + amountThreads + newline);
     builder.append(" amountPosts: " + amountPosts + newline);
-    builder.append(" lastPost: " + lastPost + newline);
     builder.append(" created: " + created + newline);
     builder.append(" updated: " + updated + newline);
     builder.append("}");

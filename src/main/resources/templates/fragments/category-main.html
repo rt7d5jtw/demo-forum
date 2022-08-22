@@ -18,12 +18,10 @@
       </div>
       </a>
       <div class="forum_section_stats">
-        <p>Replies: <!-- <th:block th:text="${thread.amountThreads}"></th:block> --></p>
-        <p>Author: <!--<th:block th:text="${thread.amountPosts}"></th:block>--></p>
-        <p>Views: <!--<th:block th:text="${thread.amountPosts}"></th:block>--></p>
+        <p>Replies: <th:block th:text="${thread.amountPosts}"></th:block></p>
       </div>
       <div class="forum_section_lastpost">
-        <p>Last post: <!--<th:block th:text="${thread.lastPost}"></th:block>--></p>
+        <p>Author: <th:block th:text="${thread.user.username}"></th:block></p>
       </div>
     </section>
   </div>

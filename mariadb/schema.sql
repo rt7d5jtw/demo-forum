@@ -32,7 +32,6 @@ create table categories (
 	topic_description varchar(255) not null,
 	amount_threads int not null,
 	amount_posts int not null,
-	last_post varchar(100),
 	created date,
 	updated timestamp,
 	unique (topic)
@@ -45,7 +44,8 @@ create table threads (
 	user_id int not null,
 	subject varchar(100) not null,
   content text,
-	created date,
+	amount_posts int not null,
+	created datetime,
 	updated timestamp,
   constraint fk_thread_category foreign key (category_id) references categories (id),
   constraint fk_thread_user foreign key (user_id) references users (id)
@@ -53,11 +53,11 @@ create table threads (
 
 -- Replies to post in a thread or to the thread.
 create table replies (
-  id varchar(20) not null primary key,
+  id int not null primary key,
 	thread_id int not null,
   user_id int not null,
   content text not null,
-	created date,
+	created datetime,
 	updated timestamp,
   constraint fk_reply_thread foreign key (thread_id) references threads (id),
 	constraint fk_reply_user foreign key (user_id) references users (id)
