@@ -165,6 +165,19 @@ main {
   line-height: initial;
 }
 
+.category_header {
+  display: flex;
+  justify-content: start;
+}
+.category_header a {
+  color: #004daa;
+  text-decoration: none;
+}
+.category_header a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .faq_section {
   display: flex;
   flex-direction: column;

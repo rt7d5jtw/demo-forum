@@ -438,12 +438,15 @@ public class ViewController {
 
     Thread forumThread = threadDao.eagerFindById(id);
     User user = forumThread.getUser();
+    Category category = forumThread.getCategory();
     List<Reply> replies = replyDao.findRelated(forumThread);
 
     if (forumThread != null && user != null && replies != null) {
       model.addAttribute("thread", forumThread);
       model.addAttribute("user", user);
+      model.addAttribute("category", category);
       model.addAttribute("replies", replies);
+      System.out.println("Your category -> " + category);
       return "thread";
     }
 

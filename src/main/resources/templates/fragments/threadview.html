@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
   <div th:fragment="threadview" class="content">
-    <header class="forum_header faq_header">
-      <h3><th:block th:text="${thread.subject}"></th:block></h3>
+    <header class="forum_header category_header">
+      <a href="/">Forums</a>
+      <i style="font-size: 1.25rem; padding: 0.5rem;">>></i>
+      <a 
+        th:href="@{/category(categoryId=${category.id})}"
+        href="/category" 
+        title="Click here to continue to the category link">
+        <th:block th:text="${category.topic}"></th:block>
+      </a>
+      <i style="font-size: 1.25rem; padding: 0.5rem;">>></i>
+      <a
+        th:href="@{/category/thread/(threadId = ${thread.id})}" 
+        hfef="/category/thread"
+        title="Click here to continue to the thread link">
+      <th:block th:text="${thread.subject}"></th:block>
+      </a>
       <!-- Only shows up to authenticated users -->
       <th:block th:if="${authenticated}">
         <a 

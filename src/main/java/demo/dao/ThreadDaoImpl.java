@@ -104,6 +104,8 @@ public class ThreadDaoImpl implements ThreadDao {
       Hibernate.initialize(forumThread);
       Hibernate.isInitialized(forumThread.getUser());
       Hibernate.initialize(forumThread.getUser());
+      Hibernate.isInitialized(forumThread.getCategory());
+      Hibernate.initialize(forumThread.getCategory());
 
       session.close();
       return forumThread;
