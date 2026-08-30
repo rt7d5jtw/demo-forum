@@ -11,29 +11,3 @@ Application web pages built using thymeleaf templating and Undertow HTTP web ser
 ```
 make local
 ```
-
----
-
-## To run the application
-
-*NOTE: Make sure you have MariaDB up!*
-
-```
-$ gradle build run
-```
-
-## To generate the schema for MariaDB
-
-*NOTE: Make sure you have MariaDB up!*
-
-```
-$ make init
-```
-
-## To generate the mockdata for MariaDB
-
-*NOTE: Make sure you have MariaDB up!*
-
-```
-$ make mockdata`
-```
