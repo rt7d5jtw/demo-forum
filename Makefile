@@ -43,4 +43,4 @@ build:
 
 # Runs the application locally
 run:
-	./gradlew bootRun
+	./gradlew run
