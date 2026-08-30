@@ -1,36 +1,25 @@
 # THIS IS ONLY MEANT FOR DEVELOPMENT USE
-version: '3.9'
-
-networks:
-  perunanetti:
-    driver: overlay
-    attachable: true
-    external: true
+version: '3.8'
 
 volumes:
-  mariadb_data:
-    external: true
-
-secrets:
-  MARIADB_PASSWORD: 
-    external: true
+  mariadb_data: # Compose will manage this automatically now
 
 services:
   mariadb:
     image: mariadb:10.3
-    networks:
-      - perunanetti
     ports:
       - "3306:3306"
-    env_file:
-      - .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=rootmeow
+      - MARIADB_DATABASE=forum
+      - MARIADB_USER=testuser
+      - MARIADB_PASSWORD=meow
     volumes:
       - mariadb_data:/var/lib/mysql
-      #- ${PWD}/mariadb/init:/docker-entrypoint-initdb.d
+      # This automatically runs your SQL scripts on first boot!
+      - ./init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: bash -c 'mysqladmin -p"$MARIADB_ROOT_PASSWORD" ping -h localhost'
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootmeow"]
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      mode: global
